@@ -16,7 +16,7 @@ cmake_minimum_required(VERSION 3.14)
 # the policy allows us to change options without caching
 cmake_policy(SET CMP0077 NEW)
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-
+# cmake_policy(SET CMP0111 NEW)
 # Sets new behavior for CMP0135, which controls how timestamps are extracted
 # when using ExternalProject_Add():
 # https://cmake.org/cmake/help/latest/policy/CMP0135.html
@@ -283,10 +283,15 @@ set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# execute_process(
+#   COMMAND
+#     bash -c
+#     "( source ${CMAKE_CURRENT_SOURCE_DIR}/scripts/setup-helper-functions.sh && echo -n $(get_cxx_flags $ENV{CPU_TARGET}))"
+#   OUTPUT_VARIABLE SCRIPT_CXX_FLAGS
+#   RESULT_VARIABLE COMMAND_STATUS)
 execute_process(
   COMMAND
-    bash -c
-    "( source ${CMAKE_CURRENT_SOURCE_DIR}/scripts/setup-helper-functions.sh && echo -n $(get_cxx_flags $ENV{CPU_TARGET}))"
+    echo -mavx2 -mfma -mavx -mf16c -mlzcnt -std=c++17 -mbmi2
   OUTPUT_VARIABLE SCRIPT_CXX_FLAGS
   RESULT_VARIABLE COMMAND_STATUS)
 
@@ -367,16 +372,16 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(BOOST_INCLUDE_LIBRARIES
-    headers
-    atomic
-    context
-    date_time
-    filesystem
-    program_options
-    regex
-    system
-    thread)
+# set(BOOST_INCLUDE_LIBRARIES
+#     # headers
+#     atomic
+#     context
+#     date_time
+#     filesystem
+#     program_options
+#     regex
+#     system
+#     thread)
 
 set_source(Boost)
 resolve_dependency(Boost 1.66.0 COMPONENTS ${BOOST_INCLUDE_LIBRARIES})
@@ -385,6 +390,7 @@ resolve_dependency(Boost 1.66.0 COMPONENTS ${BOOST_INCLUDE_LIBRARIES})
 # for reference. find_package(range-v3)
 
 set_source(gflags)
+
 resolve_dependency(gflags COMPONENTS shared)
 if(NOT TARGET gflags::gflags)
   # This is a bit convoluted, but we want to be able to use gflags::gflags as a
@@ -403,7 +409,10 @@ if(${gflags_SOURCE} STREQUAL "BUNDLED")
 else()
   set(glog_SOURCE SYSTEM)
 endif()
-resolve_dependency(glog)
+set(GLOG_LIBRARY "C:\\Program Files (x86)\\glog\\bin\\glogd.dll")
+set(GLOG_INCLUDE_DIR "C:\\Program Files (x86)\\glog\\include")
+list(APPEND CMAKE_PREFIX_PATH "C:/Program Files (x86)/glog")
+resolve_dependency(glog 0.6.0 REQUIRED)
 
 set_source(fmt)
 resolve_dependency(fmt)
@@ -506,8 +515,11 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin")
     set(FLEX_INCLUDE_DIR "${BREW_FLEX_PREFIX}/include")
   endif()
 endif()
-find_package(BISON 3.0.4 REQUIRED)
-find_package(FLEX 2.5.13 REQUIRED)
+set(BISON_EXECUTABLE "C:\\Program Files (x86)\\GnuWin32\\bin\\bison.exe")
+set(FLEX_EXECUTABLE "C:\\Program Files (x86)\\GnuWin32\\bin\\flex.exe")
+set(FLEX_INCLUDE_DIR "C:\\Program Files (x86)\\GnuWin32\\include")
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
 
 include_directories(SYSTEM velox)
 include_directories(SYSTEM velox/external)
@@ -523,7 +535,7 @@ if(NOT VELOX_DISABLE_GOOGLETEST)
       PARENT_SCOPE)
 endif()
 
-set(xsimd_SOURCE BUNDLED)
+set(xsimd_SOURCE AUTO)
 resolve_dependency(xsimd)
 
 if(VELOX_BUILD_TESTING)

@@ -1,0 +1,14 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 53e77cb..17faeb4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -93,7 +93,8 @@ set (PACKAGE_TARNAME     "${PACKAGE_NAME}-${PACKAGE_VERSION}")
+ set (PACKAGE_BUGREPORT   "https://github.com/gflags/gflags/issues")
+ set (PACKAGE_DESCRIPTION "A commandline flags library that allows for distributed flags.")
+ set (PACKAGE_URL         "http://gflags.github.io/gflags")
+-
++set (GFLAGS_BUILD_SHARED_LIBS "ON")
++set (BUILD_SHARED_LIBS "ON")
+ project (${PACKAGE_NAME} VERSION ${PACKAGE_VERSION} LANGUAGES CXX)
+ if (CMAKE_VERSION VERSION_LESS 3.4)
+   # C language still needed because the following required CMake modules

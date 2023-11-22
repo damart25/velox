@@ -1,0 +1,100 @@
+cmake -B "_build\release" -DTREAT_WARNINGS_AS_ERRORS=1 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL="ON" -DVELOX_BUILD_TESTING="ON" -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=D:\src\vcpkg\scripts\buildsystems\vcpkg.cmake -G "Ninja"
+or:
+cmake -B "_build\clang" -DTREAT_WARNINGS_AS_ERRORS=1 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL="ON" -DVELOX_BUILD_TESTING="ON" -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -DCMAKE_TOOLCHAIN_FILE=D:\src\vcpkg\scripts\buildsystems\vcpkg.cmake -G "Ninja" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+vcpkg install boost
+After installing with the above command, boost-headers is still missing, but might not be required. Removing it as dependency for now.
+vcpkg install gflags -> this wont install the required shared libraries, in order to get the shared libraries, I had to build and install gflags from source, using the following cmake flags:         -DBUILD_SHARED_LIBS=ON
+-DGFLAGS_BUILD_SHARED_LIBS=ON
+Used nmake for building: 
+cd gflags
+mkdir _build
+cd _build 
+# cmake .. -G "NMake Makefiles" -DGFLAGS_BUILD_SHARED_LIBS="ON" -DBUILD_SHARED_LIBS="ON"
+# NMake
+# (admin) nmake install/local
+cmake .. -G "Ninja" -DGFLAGS_BUILD_SHARED_LIBS="ON" -DBUILD_SHARED_LIBS="ON"
+#This needs to be run from an x64 VS command prompt.
+cmake --build . 
+#This command requires elevated.
+cmake --build . --target install  
+
+#Removed the dependency on gflags on glog y making an overlay. It can now be installed by using: 
+D:\src\vcpkg\vcpkg.exe install "--overlay-ports=D:\MTC_source_code\velox\port_overlays\glog" glog
+#The following is not currently used, but could be usefull in the future for building.
+# vcpkg install glog -> Glog depends on gflags, for this same reason glog wont install.
+# cd gflags
+# mkdir _build
+# cd _build 
+# cmake .. -G "NMake Makefiles"
+# nmake
+
+#Folly is avaiable in VCPKG, depends both on GFLAGS and GLOGS, same as with glog, port_overlay to remove the dependency for now.
+D:\src\vcpkg\vcpkg.exe install "--overlay-ports=D:\MTC_source_code\velox\port_overlays\folly" folly
+
+vcpkg install re2
+vcpkg install simdjson -> Requires version 3.2.1 -> Can be fixed in the vcpkg.json
+# -- Setting simdjson source to AUTO
+# CMake Warning at D:/MTC_source_code/vcpkg/scripts/buildsystems/vcpkg.cmake:859 (_find_package):
+#   Could not find a configuration file for package "simdjson" that is
+#   compatible with requested version "3.1.5".
+
+#   The following configuration files were considered but not accepted:
+
+#     D:/MTC_source_code/vcpkg/installed/x64-windows/share/simdjson/simdjson-config.cmake, version: 3.2.1
+
+# Call Stack (most recent call first):
+#   CMake/ResolveDependency.cmake:70 (find_package)
+#   CMakeLists.txt:432 (resolve_dependency)
+
+# INstall Bison and flex online:
+https://gnuwin32.sourceforge.net/packages/bison.htm
+
+#Disabled the wError to proceed further with building making it compatible with CXX_STANDARD=17
+cmake -B "_build\updateCPP" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL="ON" -DVELOX_BUILD_TESTING="ON" -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=D:\src\vcpkg\scripts\buildsystems\vcpkg.cmake -DCXX_STANDARD=17
+
+
+#Breakdown:
+
+#Builds without issue.
+cmake --build . --target velox_flag_definitions 
+
+# velox_flag_definitions.vcxproj -> D:\MTC_source_code\velox\_build\release\velox\flag_definitions\velox_flag_definitions.dir\Debug\velox_flag_definitions.lib
+# clang-cl : warning : argument unused during compilation: '/Zc:referenceBinding' [-Wunused-command-line-argument] [D:\MTC_source_code\velox\_build\release\velox\common\process\velox_process
+# .vcxproj]
+# clang-cl : warning : argument unused during compilation: '/Zc:implicitNoexcept' [-Wunused-command-line-argument] [D:\MTC_source_code\velox\_build\release\velox\common\process\velox_process 
+# .vcxproj]
+# clang-cl : warning : argument unused during compilation: '/Zc:throwingNew' [-Wunused-command-line-argument] [D:\MTC_source_code\velox\_build\release\velox\common\process\velox_process.vcxp 
+# roj]
+#   In file included from D:\MTC_source_code\velox\velox\common\process\ProcessBase.cpp:17:
+# D:\MTC_source_code\velox\.\velox/common/process/ProcessBase.h(19,10): fatal  error : 'pthread.h' file not found [D:\MTC_source_code\velox\_build\release\velox\common\process\velox_process. 
+# vcxproj]
+
+cmake --build . --target velox_encode 
+# MSBuild version 17.7.2+d6990bcfa for .NET Framework
+
+# clang-cl : warning : argument unused during compilation: '/Zc:referenceBinding' [-Wunused-command-line-argument] [D:\MTC_source_code\velox\_build\release\velox\common\encode\velox_encode.v
+# cxproj]
+# clang-cl : warning : argument unused during compilation: '/Zc:implicitNoexcept' [-Wunused-command-line-argument] [D:\MTC_source_code\velox\_build\release\velox\common\encode\velox_encode.v 
+# cxproj]
+# clang-cl : warning : argument unused during compilation: '/Zc:throwingNew' [-Wunused-command-line-argument] [D:\MTC_source_code\velox\_build\release\velox\common\encode\velox_encode.vcxpro 
+# j]
+#   In file included from D:\MTC_source_code\velox\velox\common\encode\Base64.cpp:16:
+#   In file included from D:\MTC_source_code\velox\.\velox/common/encode/Base64.h:23:
+#   In file included from D:/MTC_source_code/velox/_build/release/vcpkg_installed/x64-windows/include\folly/io/IOBuf.h:29:
+# D:/MTC_source_code/velox/_build/release/vcpkg_installed/x64-windows/include\glog/logging.h(89,10): fatal  error : 'gflags/gflags.h' file not found [D:\MTC_source_code\velox\_build\release\ 
+# velox\common\encode\velox_encode.vcxproj]
+
+cmake --build . --target velox_external_date
+MSBuild version 17.7.2+d6990bcfa for .NET Framework
+
+# D:\MTC_source_code\velox\velox\external\date\tz.cpp(83,12): warning : non-portable path to file '<Windows.h>'; specified path differs in case from file name on disk [-Wnonportable-system-i
+# nclude-path] [D:\MTC_source_code\velox\_build\release\velox\external\date\velox_external_date.vcxproj]
+#   In file included from D:\MTC_source_code\velox\velox\external\date\tz.cpp:86:
+#   In file included from D:/MTC_source_code/velox/velox/external\date/tz_private.h:31:
+# D:\MTC_source_code\velox\velox\external\date/tz.h(87,6): error : "USE_OS_TZDB can not be used on Windows" [D:\MTC_source_code\velox\_build\release\velox\external\date\velox_external_date.v 
+# cxproj]
+# D:\MTC_source_code\velox\velox\external\date\tz.cpp(95,12): fatal  error : 'dirent.h' file not found [D:\MTC_source_code\velox\_build\release\velox\external\date\velox_external_date.vcxpro
+# j]
+
+#No issue
+cmake --build . --target velox_type_tz  
