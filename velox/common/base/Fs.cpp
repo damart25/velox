@@ -17,7 +17,8 @@
 #include "velox/common/base/Fs.h"
 #include <fmt/format.h>
 #include <glog/logging.h>
-
+#include <io.h>
+#include <direct.h>
 namespace facebook::velox::common {
 
 bool generateFileDirectory(const char* dirPath) {
@@ -37,10 +38,21 @@ std::optional<std::string> generateTempFilePath(
     const char* basePath,
     const char* prefix) {
   auto path = fmt::format("{}/velox_{}_XXXXXX", basePath, prefix);
-  auto fd = mkstemp(path.data());
-  if (fd == -1) {
+
+  // Use _mktemp_s to create a unique temporary path
+  if (_mktemp_s(&path[0], path.size() + 1) != 0) {
     return std::nullopt;
   }
+
+  // Open the file for writing
+  FILE* file;
+  if (fopen_s(&file, path.c_str(), "w") != 0) {
+    return std::nullopt;
+  }
+
+  // Close the file immediately to ensure it's created and empty
+
+  fclose(file);
   return path;
 }
 
@@ -48,10 +60,18 @@ std::optional<std::string> generateTempFolderPath(
     const char* basePath,
     const char* prefix) {
   auto path = fmt::format("{}/velox_{}_XXXXXX", basePath, prefix);
-  auto createdPath = mkdtemp(path.data());
-  if (createdPath == nullptr) {
+
+    // Use _mktemp_s to create a unique temporary path
+  if (_mktemp_s(&path[0], path.size() + 1) != 0) {
     return std::nullopt;
   }
+
+  // Create the temporary directory
+  if (_mkdir(path.c_str()) != 0) {
+    return std::nullopt;
+  }
+
+
   return path;
 }
 
