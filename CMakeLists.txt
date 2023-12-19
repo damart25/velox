@@ -291,7 +291,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 #   RESULT_VARIABLE COMMAND_STATUS)
 execute_process(
   COMMAND
-    echo -mavx2 -mfma -mavx -mf16c -mlzcnt -std=c++17 -mbmi2
+    echo -mavx2 -mfma -mavx -mf16c -mlzcnt -std=c++17 -mbmi2 -Wno-c++98-compat
   OUTPUT_VARIABLE SCRIPT_CXX_FLAGS
   RESULT_VARIABLE COMMAND_STATUS)
 

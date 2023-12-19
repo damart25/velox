@@ -150,14 +150,35 @@ inline std::string errorMessage(const std::string& str) {
 }
 
 template <typename... Args>
+//TODO: davidmar fix for FMT issue.
 std::string errorMessage(fmt::string_view fmt, const Args&... args) {
-  return fmt::vformat(fmt, fmt::make_format_args(args...));
+  //return fmt::vformat(fmt, fmt::make_format_args(args...));
+  return "TODO: davidmar fix for FMT issue";
 }
 
 } // namespace detail
 
 #define _VELOX_THROW_IMPL(                                               \
     exception, expr_str, errorSource, errorCode, isRetriable, ...)       \
+  {                                                                      \
+    /* GCC 9.2.1 doesn't accept this code with constexpr. */             \
+    static const ::facebook::velox::detail::VeloxCheckFailArgs           \
+        veloxCheckFailArgs = {                                           \
+            __FILE__,                                                    \
+            __LINE__,                                                    \
+            __FUNCTION__,                                                \
+            expr_str,                                                    \
+            errorSource,                                                 \
+            errorCode,                                                   \
+            isRetriable};                                                \
+    auto message = ::facebook::velox::detail::errorMessage(__VA_ARGS__); \
+    ::facebook::velox::detail::veloxCheckFail<                           \
+        exception,                                                       \
+        typename ::facebook::velox::detail::VeloxCheckFailStringType<    \
+            decltype(message)>::type>(veloxCheckFailArgs, message);      \
+  }
+#define _VELOX_THROW_IMPL_W(                                               \
+    exception, expr_str, errorSource, errorCode, isRetriable, ... )       \
   {                                                                      \
     /* GCC 9.2.1 doesn't accept this code with constexpr. */             \
     static const ::facebook::velox::detail::VeloxCheckFailArgs           \
@@ -187,6 +208,17 @@ std::string errorMessage(fmt::string_view fmt, const Args&... args) {
         isRetriable,                                                     \
         __VA_ARGS__);                                                    \
   }
+#define _VELOX_CHECK_AND_THROW_IMPL_W(                                   \
+    expr, expr_str, exception, errorSource, errorCode, isRetriable, ...) \
+  if (UNLIKELY(!(expr))) {                                               \
+    _VELOX_THROW_IMPL_W(                                                   \
+        exception,                                                       \
+        expr_str,                                                        \
+        errorSource,                                                     \
+        errorCode,                                                       \
+        isRetriable,                                                     \
+        __VA_ARGS__);                                                    \
+  }
 
 #define _VELOX_THROW(exception, ...) \
   _VELOX_THROW_IMPL(exception, "", ##__VA_ARGS__)
@@ -202,6 +234,16 @@ DECLARE_CHECK_FAIL_TEMPLATES(::facebook::velox::VeloxRuntimeError);
       ::facebook::velox::error_code::kInvalidState.c_str(),         \
       /* isRetriable */ false,                                      \
       ##__VA_ARGS__)
+
+#define _VELOX_CHECK_IMPL_W(expr, expr_str, ...)                      \
+  _VELOX_CHECK_AND_THROW_IMPL_W(                                      \
+      expr,                                                         \
+      expr_str,                                                     \
+      ::facebook::velox::VeloxRuntimeError,                         \
+      ::facebook::velox::error_source::kErrorSourceRuntime.c_str(), \
+      ::facebook::velox::error_code::kInvalidState.c_str(),         \
+      /* isRetriable */ false,                                      \
+      __VA_ARGS__)
 
 // If the caller passes a custom message (4 *or more* arguments), we
 // have to construct a format string from ours ("({} vs. {})") plus
@@ -232,8 +274,19 @@ DECLARE_CHECK_FAIL_TEMPLATES(::facebook::velox::VeloxRuntimeError);
         expr2);                                                  \
   }
 
+#define _VELOX_CHECK_OP_HELPER_W(implmacro, expr1, expr2, op)    \
+    implmacro(                                                   \
+        (expr1)op(expr2),                                        \
+        #expr1 " " #op " " #expr2,                               \
+        "({} vs. {})",                                           \
+        expr1,                                                   \
+        expr2);                                                  
+
 #define _VELOX_CHECK_OP(expr1, expr2, op, ...) \
   _VELOX_CHECK_OP_HELPER(_VELOX_CHECK_IMPL, expr1, expr2, op, ##__VA_ARGS__)
+
+#define _VELOX_CHECK_OP_W(expr1, expr2, op) \
+  _VELOX_CHECK_OP_HELPER_W(_VELOX_CHECK_IMPL_W, expr1, expr2, op)
 
 #define _VELOX_USER_CHECK_IMPL(expr, expr_str, ...)              \
   _VELOX_CHECK_AND_THROW_IMPL(                                   \
@@ -260,6 +313,16 @@ DECLARE_CHECK_FAIL_TEMPLATES(::facebook::velox::VeloxRuntimeError);
 #define VELOX_CHECK_NE(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, !=, ##__VA_ARGS__)
 #define VELOX_CHECK_NULL(e, ...) VELOX_CHECK(e == nullptr, ##__VA_ARGS__)
 #define VELOX_CHECK_NOT_NULL(e, ...) VELOX_CHECK(e != nullptr, ##__VA_ARGS__)
+
+#define VELOX_CHECK_W(expr) _VELOX_CHECK_IMPL_W(expr, #expr)
+#define VELOX_CHECK_GT_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, >)
+#define VELOX_CHECK_GE_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, >=)
+#define VELOX_CHECK_LT_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, <)
+#define VELOX_CHECK_LE_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, <=)
+#define VELOX_CHECK_EQ_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, ==)
+#define VELOX_CHECK_NE_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, !=)
+#define VELOX_CHECK_NULL_W(e) VELOX_CHECK_W(e == nullptr)
+#define VELOX_CHECK_NOT_NULL_W(e) VELOX_CHECK_W(e != nullptr)
 
 #define VELOX_UNSUPPORTED(...)                                   \
   _VELOX_THROW(                                                  \

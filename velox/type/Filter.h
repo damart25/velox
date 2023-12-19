@@ -23,7 +23,7 @@
 #include <vector>
 
 #include <folly/Range.h>
-#include <folly/container/F14Set.h>
+//#include <folly/container/F14Set.h>
 
 #include "velox/common/base/Exceptions.h"
 #include "velox/common/base/SimdUtil.h"
@@ -870,13 +870,14 @@ class HugeintRange final : public Filter {
   int128_t upper() const {
     return upper_;
   }
-
+  //TODO: davidmar temp fix for fmt issue.
   std::string toString() const final {
-    return fmt::format(
-        "HugeintRange: [{}, {}] {}",
-        lower_,
-        upper_,
-        nullAllowed_ ? "with nulls" : "no nulls");
+    //return fmt::format(
+    //    "HugeintRange: [{}, {}] {}",
+    //    lower_,
+    //    upper_,
+    //    nullAllowed_ ? "with nulls" : "no nulls");
+    return "TODO:davidmar: temp fix for fmt issue";
   }
 
   bool testingEquals(const Filter& other) const final;

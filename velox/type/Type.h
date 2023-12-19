@@ -79,7 +79,7 @@ enum class TypeKind : int8_t {
   ROW = 32,
   UNKNOWN = 33,
   FUNCTION = 34,
-  OPAQUE = 35,
+  OPAQUE_2 = 35,
   INVALID = 36
 };
 
@@ -366,13 +366,13 @@ struct TypeTraits<TypeKind::FUNCTION> {
 };
 
 template <>
-struct TypeTraits<TypeKind::OPAQUE> {
+struct TypeTraits<TypeKind::OPAQUE_2> {
   using ImplType = OpaqueType;
   using NativeType = std::shared_ptr<void>;
   using DeepCopiedType = std::shared_ptr<void>;
   static constexpr uint32_t minSubTypes = 0;
   static constexpr uint32_t maxSubTypes = 0;
-  static constexpr TypeKind typeKind = TypeKind::OPAQUE;
+  static constexpr TypeKind typeKind = TypeKind::OPAQUE_2;
   static constexpr bool isPrimitiveType = false;
   static constexpr bool isFixedWidth = false;
   static constexpr const char* name = "OPAQUE";
@@ -539,7 +539,7 @@ class Type : public Tree<const TypePtr>, public velox::ISerializable {
   VELOX_FLUENT_CAST(Array, ARRAY)
   VELOX_FLUENT_CAST(Map, MAP)
   VELOX_FLUENT_CAST(Row, ROW)
-  VELOX_FLUENT_CAST(Opaque, OPAQUE)
+  VELOX_FLUENT_CAST(Opaque, OPAQUE_2)
   VELOX_FLUENT_CAST(UnKnown, UNKNOWN)
 
   const ShortDecimalType& asShortDecimal() const;
@@ -990,7 +990,7 @@ class FunctionType : public TypeBase<TypeKind::FUNCTION> {
   }
 
   const std::shared_ptr<const Type>& childAt(uint32_t idx) const override {
-    VELOX_CHECK_LT(idx, children_.size());
+    VELOX_CHECK_LT_W(idx, children_.size());
     return children_[idx];
   }
 
@@ -1029,7 +1029,7 @@ class FunctionType : public TypeBase<TypeKind::FUNCTION> {
   const std::vector<TypeParameter> parameters_;
 };
 
-class OpaqueType : public TypeBase<TypeKind::OPAQUE> {
+class OpaqueType : public TypeBase<TypeKind::OPAQUE_2> {
  public:
   template <typename T>
   using SerializeFunc = std::function<std::string(const std::shared_ptr<T>&)>;
@@ -1370,7 +1370,7 @@ std::shared_ptr<const FunctionType> FUNCTION(
     TypePtr returnType);
 
 template <typename Class>
-std::shared_ptr<const OpaqueType> OPAQUE() {
+std::shared_ptr<const OpaqueType> OPAQUE_2() {
   return OpaqueType::create<Class>();
 }
 
@@ -1711,7 +1711,7 @@ std::shared_ptr<const Type> createType<TypeKind::MAP>(
     std::vector<std::shared_ptr<const Type>>&& children);
 
 template <>
-std::shared_ptr<const Type> createType<TypeKind::OPAQUE>(
+std::shared_ptr<const Type> createType<TypeKind::OPAQUE_2>(
     std::vector<std::shared_ptr<const Type>>&& children);
 
 #undef VELOX_SCALAR_ACCESSOR
@@ -1931,7 +1931,7 @@ struct SimpleTypeTrait<Generic<T, comparable, orderable>> {
 
 template <typename T>
 struct SimpleTypeTrait<std::shared_ptr<T>>
-    : public TypeTraits<TypeKind::OPAQUE> {};
+    : public TypeTraits<TypeKind::OPAQUE_2> {};
 
 template <typename KEY, typename VAL>
 struct SimpleTypeTrait<Map<KEY, VAL>> : public TypeTraits<TypeKind::MAP> {};
@@ -2050,7 +2050,7 @@ struct CppToType<Generic<T>> : public CppToTypeBase<TypeKind::UNKNOWN> {};
 // TODO: maybe do something smarter than just matching any shared_ptr, e.g. we
 // can declare "registered" types explicitly
 template <typename T>
-struct CppToType<std::shared_ptr<T>> : public CppToTypeBase<TypeKind::OPAQUE> {
+struct CppToType<std::shared_ptr<T>> : public CppToTypeBase<TypeKind::OPAQUE_2> {
   // We override the type with the concrete specialization here!
   // using NativeType = std::shared_ptr<T>;
   static auto create() {

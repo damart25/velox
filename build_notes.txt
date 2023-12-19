@@ -52,6 +52,7 @@ https://gnuwin32.sourceforge.net/packages/bison.htm
 #Disabled the wError to proceed further with building making it compatible with CXX_STANDARD=17
 cmake -B "_build\updateCPP" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL="ON" -DVELOX_BUILD_TESTING="ON" -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=D:\src\vcpkg\scripts\buildsystems\vcpkg.cmake -DCXX_STANDARD=17
 
+cmake --build . --config "Release"
 
 #Breakdown:
 
