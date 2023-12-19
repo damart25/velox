@@ -23,7 +23,7 @@
 #include <vector>
 
 #include <folly/Range.h>
-//#include <folly/container/F14Set.h>
+#include <folly/container/F14Set.h>
 
 #include "velox/common/base/Exceptions.h"
 #include "velox/common/base/SimdUtil.h"
