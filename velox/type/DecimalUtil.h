@@ -291,12 +291,12 @@ class DecimalUtil {
       divideWithRoundUp<int128_t, int128_t, int64_t>(
           avg, sum, count, false, 0, 0);
     } else {
-      __uint128_t sumA{0};
+      uint128_t sumA{0};
       auto remainderA =
           DecimalUtil::divideWithRoundUp<uint128_t, uint128_t, int64_t>(
               sumA, kOverflowMultiplier, count, true, 0, 0);
       double totalRemainder = (double)remainderA / count;
-      __uint128_t sumB{0};
+      uint128_t sumB{0};
       auto remainderB =
           DecimalUtil::divideWithRoundUp<uint128_t, int128_t, int64_t>(
               sumB, sum, count * overflow, true, 0, 0);

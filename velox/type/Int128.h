@@ -40,6 +40,7 @@ class int128;
 
 class uint128 {
  public:
+  friend std::hash<uint128>;
   constexpr uint128() : hi_(0), lo_(0) {}
   constexpr uint128(std::pair<uint64_t, uint64_t> p) : hi_(p.first), lo_(p.second) {}
   constexpr uint128(uint64_t hi, uint64_t lo) : hi_(hi), lo_(lo) {}
@@ -136,6 +137,24 @@ class uint128 {
     return *this + uint128(other);
   }
 
+  constexpr uint128 operator++() const {
+    return *this + uint128(1);
+  }
+
+  // TODO: implement multply=
+  constexpr uint128 operator*=(const uint128& other) const {
+    return uint128(0);
+  }
+  // TODO: implement multply=
+  constexpr uint128 operator*=(const int& other) const {
+    return uint128(0);
+  }
+  // TODO: implement multiply=
+  constexpr uint128 operator*=(const int64_t& other) const {
+    return uint128(0);
+  }
+
+
   operator int64_t() const {
     return this->lo_;
   }
@@ -150,7 +169,16 @@ class uint128 {
 // TODO: Davidmar define validity of >> and << operators as those may need to
 // propagate the sign.
 class int128 {
+ private:
+  int64_t hi_;
+  uint64_t lo_;
+
  public:
+  friend std::hash<int128>;
+  int128(const int128& other) {
+    this->hi_ = other.hi_;
+    this->lo_ = other.lo_;
+  }
   constexpr int128() : hi_(0), lo_(0) {}
   constexpr int128(std::pair<int64_t, uint64_t> p)
       : hi_(p.first), lo_(p.second) {}
@@ -233,7 +261,16 @@ class int128 {
   }  
   bool operator!=(int128 other) const {
     return !(*this == other);
+  }  
+  // TODO: davidmar implement != operator.
+  bool operator!=(int other) const {
+    return !(*this == other);
   }
+  //TODO: davidmar implement /= operator.
+  int128 operator/=(int other) const {
+    return *this;
+  }
+
   
   constexpr int128 operator+(const int128 &other) const{
     uint64_t lo = this->lo_ + other.lo_;
@@ -283,6 +320,9 @@ class int128 {
   }
 
   //TODO: implement division
+  constexpr int128 operator/(const int& other) const {
+    return int128(0);
+  }    
   constexpr int128 operator/(const int64_t& other) const {
     return int128(0);
   }  
@@ -292,6 +332,10 @@ class int128 {
 
   //TODO: implement modulo
   constexpr int128 operator%(const int64_t& other) const {
+    return int128(0);
+  }
+  //TODO: implement modulo
+  constexpr int128 operator%(const int& other) const {
     return int128(0);
   }
   //TODO: implement modulo
@@ -308,6 +352,15 @@ class int128 {
   }
   //TODO: implement multply
   constexpr int128 operator*(const int128& other) const {
+    return int128(0);
+  }  
+  
+  //TODO: implement multply=
+  constexpr int128 operator*=(const int128& other) const {
+    return int128(0);
+  }  
+  //TODO: implement multply=
+  constexpr int128 operator*=(const int& other) const {
     return int128(0);
   }
   // TODO: implement multiply=
@@ -327,14 +380,31 @@ class int128 {
   operator uint128() const {
     return uint128(this->hi_, this->lo_);
   }
- private:
-  int64_t hi_;
-  uint64_t lo_;
+
 };
 
 bool mul_overflow(int128 a , int128 b ,int64_t result) {
   return true;
 
 } // namespace facebook
-}
+
+
+} // namespace facebook::velox::type
+
+namespace std {
+template <>
+struct hash<facebook::velox::type::uint128> {
+  // TODO: davidmar implement hashing operation for 128 bits.
+  size_t operator()(const facebook::velox::type::uint128& obj) const {
+    return 0;
+  }
+};
+template <>
+struct hash<facebook::velox::type::int128> {
+  // TODO: davidmar implement hashing operation for 128 bits.
+  size_t operator()(const facebook::velox::type::int128& obj) const {
+    return 0;
+  }
+};
+} // namespace std
 #endif /* TYPE_INT128_H__ */
