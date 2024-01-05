@@ -557,5 +557,14 @@ if("${TREAT_WARNINGS_AS_ERRORS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
 
+# Check for AVX support
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
+
+if(COMPILER_SUPPORTS_MARCH_NATIVE)
+    # If -march=native is supported, add the compile definition
+    add_compile_definitions(__AVX__)
+endif()
+
 add_subdirectory(third_party)
 add_subdirectory(velox)

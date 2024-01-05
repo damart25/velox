@@ -31,6 +31,7 @@
 #include "velox/type/StringView.h"
 #include "velox/type/Type.h"
 
+
 namespace facebook::velox::common {
 
 enum class FilterKind {
