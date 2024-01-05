@@ -96,6 +96,10 @@ constexpr inline T roundUp(T value, U factor) {
 constexpr inline uint64_t lowMask(int32_t bits) {
   return (1UL << bits) - 1;
 }
+constexpr inline uint64_t lowMask(size_t bits) {
+  return (size_t(1) << bits) - 1;
+}
+
 
 constexpr inline uint64_t highMask(int32_t bits) {
   return lowMask(bits) << (64 - bits);

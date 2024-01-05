@@ -60,7 +60,7 @@ const std::unordered_map<std::string, TypeKind>& getTypeStringMap() {
       {"ROW", TypeKind::ROW},
       {"FUNCTION", TypeKind::FUNCTION},
       {"UNKNOWN", TypeKind::UNKNOWN},
-      {"OPAQUE", TypeKind::OPAQUE},
+      {"OPAQUE", TypeKind::OPAQUE_2},
       {"INVALID", TypeKind::INVALID}};
   return kTypeStringMap;
 }
@@ -103,7 +103,7 @@ std::string mapTypeKindToName(const TypeKind& typeKind) {
       {TypeKind::ROW, "ROW"},
       {TypeKind::FUNCTION, "FUNCTION"},
       {TypeKind::UNKNOWN, "UNKNOWN"},
-      {TypeKind::OPAQUE, "OPAQUE"},
+      {TypeKind::OPAQUE, "OPAQUE_2"},
       {TypeKind::INVALID, "INVALID"}};
 
   auto found = typeEnumMap.find(typeKind);
@@ -184,7 +184,7 @@ TypePtr Type::create(const folly::dynamic& obj) {
           std::move(names), std::move(childTypes));
     }
 
-    case TypeKind::OPAQUE: {
+    case TypeKind::OPAQUE_2: {
       const auto& persistentName = obj["opaque"].asString();
       const auto& registry = OpaqueSerdeRegistry::get();
       auto it = registry.reverse.find(persistentName);
@@ -651,7 +651,7 @@ folly::dynamic OpaqueType::serialize() const {
 
   folly::dynamic obj = folly::dynamic::object;
   obj["name"] = "Type";
-  obj["type"] = TypeTraits<TypeKind::OPAQUE>::name;
+  obj["type"] = TypeTraits<TypeKind::OPAQUE_2>::name;
   obj["opaque"] = it->second.persistentName;
   return obj;
 }
@@ -821,8 +821,8 @@ TypePtr createType<TypeKind::MAP>(std::vector<TypePtr>&& children) {
 }
 
 template <>
-TypePtr createType<TypeKind::OPAQUE>(std::vector<TypePtr>&& /*children*/) {
-  std::string name{TypeTraits<TypeKind::OPAQUE>::name};
+TypePtr createType<TypeKind::OPAQUE_2>(std::vector<TypePtr>&& /*children*/) {
+  std::string name{TypeTraits<TypeKind::OPAQUE_2>::name};
   VELOX_USER_FAIL("Not supported for kind: {}", name);
 }
 
