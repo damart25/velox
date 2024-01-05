@@ -1,11 +1,16 @@
 #Install Gflags from source: https://github.com/gflags/gflags
 
-# cd gflags
-# mkdir _build
-# cd _build 
-# cmake .. -G "NMake Makefiles"
-# nmake
-
+cd gflags
+mkdir _build
+cd _build 
+# cmake .. -G "NMake Makefiles" -DGFLAGS_BUILD_SHARED_LIBS="ON" -DBUILD_SHARED_LIBS="ON"
+# NMake
+# (admin) nmake install/local
+cmake .. -G "Ninja" -DGFLAGS_BUILD_SHARED_LIBS="ON" -DBUILD_SHARED_LIBS="ON"
+#This needs to be run from an x64 VS command prompt.
+cmake --build . 
+#This command requires elevated.
+cmake --build . --target install  
 
 # INstall Bison and flex online:
 https://gnuwin32.sourceforge.net/packages/bison.htm
