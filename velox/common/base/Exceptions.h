@@ -298,9 +298,23 @@ DECLARE_CHECK_FAIL_TEMPLATES(::facebook::velox::VeloxRuntimeError);
       /* isRetriable */ false,                                   \
       ##__VA_ARGS__)
 
+#define _VELOX_USER_CHECK_IMPL_W(expr, expr_str, ...)              \
+  _VELOX_CHECK_AND_THROW_IMPL_W(                                   \
+      expr,                                                      \
+      expr_str,                                                  \
+      ::facebook::velox::VeloxUserError,                         \
+      ::facebook::velox::error_source::kErrorSourceUser.c_str(), \
+      ::facebook::velox::error_code::kInvalidArgument.c_str(),   \
+      /* isRetriable */ false,                                    \
+      ##__VA_ARGS__)
+
 #define _VELOX_USER_CHECK_OP(expr1, expr2, op, ...) \
   _VELOX_CHECK_OP_HELPER(                           \
       _VELOX_USER_CHECK_IMPL, expr1, expr2, op, ##__VA_ARGS__)
+
+#define _VELOX_USER_CHECK_OP_W(expr1, expr2, op) \
+  _VELOX_CHECK_OP_HELPER_W(                           \
+      _VELOX_USER_CHECK_IMPL_W, expr1, expr2, op)
 
 // For all below macros, an additional message can be passed using a
 // format string and arguments, as with `fmt::format`.
@@ -407,6 +421,27 @@ DECLARE_CHECK_FAIL_TEMPLATES(::facebook::velox::VeloxUserError);
   VELOX_USER_CHECK(e == nullptr, ##__VA_ARGS__)
 #define VELOX_USER_CHECK_NOT_NULL(e, ...) \
   VELOX_USER_CHECK(e != nullptr, ##__VA_ARGS__)
+
+// For all below macros, an additional message can be passed using a
+// format string and arguments, as with `fmt::format`.
+#define VELOX_USER_CHECK_W(expr) \
+  _VELOX_USER_CHECK_IMPL_W(expr, #expr)
+#define VELOX_USER_CHECK_GT_W(e1, e2) \
+  _VELOX_USER_CHECK_OP_W(e1, e2, >)
+#define VELOX_USER_CHECK_GE_W(e1, e2) \
+  _VELOX_USER_CHECK_OP_W(e1, e2, >=)
+#define VELOX_USER_CHECK_LT_W(e1, e2) \
+  _VELOX_USER_CHECK_OP_W(e1, e2, <)
+#define VELOX_USER_CHECK_LE_W(e1, e2) \
+  _VELOX_USER_CHECK_OP_W(e1, e2, <=)
+#define VELOX_USER_CHECK_EQ_W(e1, e2) \
+  _VELOX_USER_CHECK_OP_W(e1, e2, ==)
+#define VELOX_USER_CHECK_NE_W(e1, e2) \
+  _VELOX_USER_CHECK_OP_W(e1, e2, !=)
+#define VELOX_USER_CHECK_NULL_W(e) \
+  VELOX_USER_CHECK_W(e == nullptr)
+#define VELOX_USER_CHECK_NOT_NULL_W(e) \
+  VELOX_USER_CHECK_W(e != nullptr)
 
 #ifndef NDEBUG
 #define VELOX_USER_DCHECK(expr, ...) VELOX_USER_CHECK(expr, ##__VA_ARGS__)
