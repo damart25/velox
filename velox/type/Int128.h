@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 #include <utility>
+#include <folly/dynamic.h>
 
 namespace facebook::velox::type {
 
@@ -46,6 +47,11 @@ class uint128 {
   constexpr uint128(uint64_t hi, uint64_t lo) : hi_(hi), lo_(lo) {}
   constexpr uint128(uint64_t lo) : hi_(0), lo_(lo) {}
 
+  constexpr uint128 operator=(const uint128& other) {
+    this->hi_ = other.hi_;
+    this->lo_ = other.lo_;
+    return *this;
+  }
   uint64_t hi() const {
     return hi_;
   }
@@ -105,6 +111,10 @@ class uint128 {
     return *this;
   }
   uint128 operator>>(int n) const {
+    uint128 a(*this);
+    return (a >>= n);
+  }  
+  uint128 operator>>(uint64_t n) const {
     uint128 a(*this);
     return (a >>= n);
   }
@@ -185,7 +195,13 @@ class int128 {
   constexpr int128(int64_t hi, uint64_t lo) : hi_(hi), lo_(lo) {}
   constexpr int128(int64_t lo)
       : hi_(lo < 0 ? 0xfffffffffffffffflu : 0), lo_(lo) {}
+  
+  int128 operator=(const int128& other) {
+    this->hi_ = other.hi_;
+    this->lo_ = other.lo_;
+    return *this;
 
+  }
   constexpr int64_t hi() const {
     return hi_;
   }
@@ -198,6 +214,13 @@ class int128 {
   void setLo(uint64_t lo) {
     lo_ = lo;
   }
+  operator folly::dynamic() const {
+    folly::dynamic dynamicObject = folly::dynamic::object;
+    dynamicObject["lo"] = this->lo_;
+    dynamicObject["hi"] = this->hi_;
+    return dynamicObject;
+  }
+
 
   int128& operator|=(int128 other) {
     hi_ |= other.hi_;
@@ -406,5 +429,17 @@ struct hash<facebook::velox::type::int128> {
     return 0;
   }
 };
+// TODO: add std::make_unsiged capabilities
+template <>
+struct make_unsigned<facebook::velox::type::int128> {
+  using type = facebook::velox::type::uint128; 
+};
+
+
 } // namespace std
+
+namespace folly {
+template <>
+struct hasher<facebook::velox::type::int128> : detail::integral_hasher<facebook::velox::type::int128> {};
+} // namespace folly
 #endif /* TYPE_INT128_H__ */

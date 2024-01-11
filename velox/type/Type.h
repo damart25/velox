@@ -600,7 +600,8 @@ class TypeBase : public Type {
   }
 
   const std::vector<TypeParameter>& parameters() const override {
-    static const std::vector<TypeParameter> kEmpty = {};
+    static const std::vector<TypeParameter> 
+        kEmpty = {};
     return kEmpty;
   }
 };
@@ -1559,8 +1560,8 @@ std::shared_ptr<const OpaqueType> OPAQUE_2() {
   [&]() {                                                                      \
     if ((typeKind) == ::facebook::velox::TypeKind::UNKNOWN) {                  \
       return TEMPLATE_FUNC<::facebook::velox::TypeKind::UNKNOWN>(__VA_ARGS__); \
-    } else if ((typeKind) == ::facebook::velox::TypeKind::OPAQUE) {            \
-      return TEMPLATE_FUNC<::facebook::velox::TypeKind::OPAQUE>(__VA_ARGS__);  \
+    } else if ((typeKind) == ::facebook::velox::TypeKind::OPAQUE_2) {            \
+      return TEMPLATE_FUNC<::facebook::velox::TypeKind::OPAQUE_2>(__VA_ARGS__);  \
     } else {                                                                   \
       return VELOX_DYNAMIC_TYPE_DISPATCH_IMPL(                                 \
           TEMPLATE_FUNC, , typeKind, __VA_ARGS__);                             \
@@ -1641,8 +1642,8 @@ std::shared_ptr<const OpaqueType> OPAQUE_2() {
   [&]() {                                                                 \
     if ((typeKind) == ::facebook::velox::TypeKind::UNKNOWN) {             \
       return CLASS<::facebook::velox::TypeKind::UNKNOWN>::FIELD;          \
-    } else if ((typeKind) == ::facebook::velox::TypeKind::OPAQUE) {       \
-      return CLASS<::facebook::velox::TypeKind::OPAQUE>::FIELD;           \
+    } else if ((typeKind) == ::facebook::velox::TypeKind::OPAQUE_2) {       \
+      return CLASS<::facebook::velox::TypeKind::OPAQUE_2>::FIELD;           \
     } else if ((typeKind) == ::facebook::velox::TypeKind::HUGEINT) {      \
       return CLASS<::facebook::velox::TypeKind::HUGEINT>::FIELD;          \
     } else {                                                              \
