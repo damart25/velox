@@ -103,7 +103,7 @@ std::string mapTypeKindToName(const TypeKind& typeKind) {
       {TypeKind::ROW, "ROW"},
       {TypeKind::FUNCTION, "FUNCTION"},
       {TypeKind::UNKNOWN, "UNKNOWN"},
-      {TypeKind::OPAQUE, "OPAQUE_2"},
+      {TypeKind::OPAQUE_2, "OPAQUE_2"},
       {TypeKind::INVALID, "INVALID"}};
 
   auto found = typeEnumMap.find(typeKind);
@@ -174,7 +174,7 @@ TypePtr Type::create(const folly::dynamic& obj) {
   TypeKind typeKind = mapNameToTypeKind(typeName);
   switch (typeKind) {
     case TypeKind::ROW: {
-      VELOX_USER_CHECK(obj["names"].isArray());
+      VELOX_USER_CHECK_W(obj["names"].isArray());
       std::vector<std::string> names;
       for (const auto& name : obj["names"]) {
         names.push_back(name.asString());
@@ -1059,10 +1059,10 @@ const SingletonTypeMap& singletonBuiltInTypes() {
 class DecimalParametricType {
  public:
   static TypePtr create(const std::vector<TypeParameter>& parameters) {
-    VELOX_USER_CHECK_EQ(2, parameters.size());
-    VELOX_USER_CHECK(parameters[0].kind == TypeParameterKind::kLongLiteral);
-    VELOX_USER_CHECK(parameters[0].longLiteral.has_value());
-    VELOX_USER_CHECK(parameters[1].kind == TypeParameterKind::kLongLiteral);
+    VELOX_USER_CHECK_EQ_W(2, parameters.size());
+    VELOX_USER_CHECK_W(parameters[0].kind == TypeParameterKind::kLongLiteral);
+    VELOX_USER_CHECK_W(parameters[0].longLiteral.has_value());
+    VELOX_USER_CHECK_W(parameters[1].kind == TypeParameterKind::kLongLiteral);
     VELOX_USER_CHECK(parameters[1].longLiteral.has_value());
 
     return DECIMAL(
@@ -1073,9 +1073,9 @@ class DecimalParametricType {
 class ArrayParametricType {
  public:
   static TypePtr create(const std::vector<TypeParameter>& parameters) {
-    VELOX_USER_CHECK_EQ(1, parameters.size());
-    VELOX_USER_CHECK(parameters[0].kind == TypeParameterKind::kType);
-    VELOX_USER_CHECK_NOT_NULL(parameters[0].type);
+    VELOX_USER_CHECK_EQ_W(1, parameters.size());
+    VELOX_USER_CHECK_W(parameters[0].kind == TypeParameterKind::kType);
+    VELOX_USER_CHECK_NOT_NULL_W(parameters[0].type);
 
     return ARRAY(parameters[0].type);
   }
@@ -1084,12 +1084,12 @@ class ArrayParametricType {
 class MapParametricType {
  public:
   static TypePtr create(const std::vector<TypeParameter>& parameters) {
-    VELOX_USER_CHECK_EQ(2, parameters.size());
-    VELOX_USER_CHECK(parameters[0].kind == TypeParameterKind::kType);
-    VELOX_USER_CHECK_NOT_NULL(parameters[0].type);
+    VELOX_USER_CHECK_EQ_W(2, parameters.size());
+    VELOX_USER_CHECK_W(parameters[0].kind == TypeParameterKind::kType);
+    VELOX_USER_CHECK_NOT_NULL_W(parameters[0].type);
 
-    VELOX_USER_CHECK(parameters[1].kind == TypeParameterKind::kType);
-    VELOX_USER_CHECK_NOT_NULL(parameters[1].type);
+    VELOX_USER_CHECK_W(parameters[1].kind == TypeParameterKind::kType);
+    VELOX_USER_CHECK_NOT_NULL_W(parameters[1].type);
 
     return MAP(parameters[0].type, parameters[1].type);
   }
@@ -1116,10 +1116,10 @@ class RowParametricType {
 class FunctionParametricType {
  public:
   static TypePtr create(const std::vector<TypeParameter>& parameters) {
-    VELOX_USER_CHECK_GE(parameters.size(), 1);
+    VELOX_USER_CHECK_GE_W(parameters.size(), 1);
     for (const auto& parameter : parameters) {
-      VELOX_USER_CHECK(parameter.kind == TypeParameterKind::kType);
-      VELOX_USER_CHECK_NOT_NULL(parameter.type);
+      VELOX_USER_CHECK_W(parameter.kind == TypeParameterKind::kType);
+      VELOX_USER_CHECK_NOT_NULL_W(parameter.type);
     }
 
     std::vector<TypePtr> argumentTypes;
