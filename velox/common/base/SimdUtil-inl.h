@@ -61,7 +61,7 @@ xsimd::batch_bool<T, A> fromBitMaskImpl(int mask) {
 
 template <typename T, typename A>
 struct BitMask<T, A, 1> {
-  static constexpr int kAllSet = bits::lowMask(xsimd::batch_bool<T, A>::size);
+   static constexpr int kAllSet =  bits::lowMask(xsimd::batch_bool<T, A>::size);
 
 #if XSIMD_WITH_AVX2
   static int toBitMask(xsimd::batch_bool<T, A> mask, const xsimd::avx2&) {
