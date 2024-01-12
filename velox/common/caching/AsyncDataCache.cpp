@@ -67,7 +67,7 @@ void AsyncDataCacheEntry::setExclusiveToShared() {
 }
 
 void AsyncDataCacheEntry::release() {
-  VELOX_CHECK_NE_W(0, numPins_);
+  VELOX_CHECK_NE(0, numPins_);
   if (numPins_ == kExclusive) {
     // Dereferencing an exclusive entry without converting to shared means that
     // the content could not be shared, e.g. error in loading.
@@ -210,7 +210,7 @@ CachePin CacheShard::findOrCreate(
     }
     ++numNew_;
     // Inside the shard mutex.
-    VELOX_CHECK_EQ_W(entryToInit->size_, 0);
+    VELOX_CHECK_EQ(entryToInit->size_, 0);
     entryToInit->size_ = size;
     entryToInit->isFirstUse_ = true;
   }
@@ -265,7 +265,7 @@ bool CoalescedLoad::loadOrFuture(folly::SemiFuture<bool>* wait) {
       return false;
     }
 
-    VELOX_CHECK_EQ_W(State::kPlanned, state_);
+    VELOX_CHECK_EQ(State::kPlanned, state_);
     state_ = State::kLoading;
   }
   // Outside of 'mutex_'.
@@ -839,7 +839,7 @@ CoalesceIoStats readPins(
             offsetInRuns += readSize;
           }
         }
-        VELOX_CHECK_EQ_W(offsetInRuns, size);
+        VELOX_CHECK_EQ(offsetInRuns, size);
       },
       [&](int32_t size, std::vector<folly::Range<char*>>& ranges) {
         // This hack allows us to store the size of the gap in the Range,

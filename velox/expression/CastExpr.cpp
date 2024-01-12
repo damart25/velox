@@ -655,7 +655,7 @@ void CastExpr::apply(
     std::vector<VectorPtr> peeledVectors;
     auto peeledEncoding = PeeledEncoding::peel(
         {input}, *nonNullRows, localDecoded, true, peeledVectors);
-    VELOX_CHECK_EQ_W(peeledVectors.size(), 1);
+    VELOX_CHECK_EQ(peeledVectors.size(), 1);
     if (peeledVectors[0]->isLazy()) {
       peeledVectors[0] =
           peeledVectors[0]->as<LazyVector>()->loadedVectorShared();

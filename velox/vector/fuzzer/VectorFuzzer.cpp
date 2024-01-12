@@ -391,7 +391,7 @@ VectorPtr VectorFuzzer::fuzz(const TypePtr& type, vector_size_t size) {
       vector = vector->slice(offset, size);
     }
   }
-  VELOX_CHECK_EQ_W(vector->size(), size);
+  VELOX_CHECK_EQ(vector->size(), size);
   return vector;
 }
 
@@ -772,7 +772,7 @@ BufferPtr VectorFuzzer::fuzzNulls(vector_size_t size) {
 BufferPtr VectorFuzzer::fuzzIndices(
     vector_size_t size,
     vector_size_t baseVectorSize) {
-  VELOX_CHECK_GE_W(size, 0);
+  VELOX_CHECK_GE(size, 0);
   BufferPtr indices = AlignedBuffer::allocate<vector_size_t>(size, pool_);
   auto rawIndices = indices->asMutable<vector_size_t>();
 

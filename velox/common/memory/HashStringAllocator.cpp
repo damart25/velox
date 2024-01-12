@@ -37,7 +37,7 @@ getPreviousFree(HashStringAllocator::Header* FOLLY_NONNULL header) {
   auto numBytes = *previousFreeSize(header);
   auto previous = reinterpret_cast<HashStringAllocator::Header*>(
       header->begin() - numBytes - 2 * sizeof(HashStringAllocator::Header));
-  VELOX_CHECK_EQ_W(previous->size(), numBytes);
+  VELOX_CHECK_EQ(previous->size(), numBytes);
   VELOX_CHECK(previous->isFree());
   VELOX_CHECK(!previous->isPreviousFree());
   return previous;
@@ -230,11 +230,11 @@ void HashStringAllocator::newSlab() {
   // AllocationPool::rangeAt(). Sometimes the last range can be
   // several huge pages for severl huge page sized arenas but
   // checkConsistency() can interpret that.
-  VELOX_CHECK_EQ_W(0, pool_.freeBytes());
+  VELOX_CHECK_EQ(0, pool_.freeBytes());
   auto available = needed - sizeof(Header) - kSimdPadding;
 
   VELOX_CHECK_NOT_NULL(run);
-  VELOX_CHECK_GT_W(available, 0);
+  VELOX_CHECK_GT(available, 0);
   // Write end  marker.
   *reinterpret_cast<uint32_t*>(run + available) = Header::kArenaEnd;
   cumulativeBytes_ += available;
@@ -336,7 +336,7 @@ HashStringAllocator::allocate(int32_t size, bool exactSize) {
     newSlab();
     header = allocateFromFreeLists(size, exactSize, exactSize);
     VELOX_CHECK(header != nullptr);
-    VELOX_CHECK_GT_W(header->size(), 0);
+    VELOX_CHECK_GT(header->size(), 0);
   }
 
   return header;
@@ -567,7 +567,7 @@ int64_t HashStringAllocator::checkConsistency() const {
     auto topRange = pool_.rangeAt(i);
     auto topRangeSize = topRange.size();
     if (topRangeSize >= kHugePageSize) {
-      VELOX_CHECK_EQ_W(0, topRangeSize % kHugePageSize);
+      VELOX_CHECK_EQ(0, topRangeSize % kHugePageSize);
     }
     // Some ranges are short and contain one arena. Some are multiples of huge
     // page size and contain one arena per huge page.
@@ -581,19 +581,19 @@ int64_t HashStringAllocator::checkConsistency() const {
       auto end = reinterpret_cast<Header*>(range.data() + size);
       auto header = reinterpret_cast<Header*>(range.data());
       while (header != end) {
-        VELOX_CHECK_GE_W(reinterpret_cast<char*>(header), range.data());
-        VELOX_CHECK_LT_W(
+        VELOX_CHECK_GE(reinterpret_cast<char*>(header), range.data());
+        VELOX_CHECK_LT(
             reinterpret_cast<char*>(header), reinterpret_cast<char*>(end));
-        VELOX_CHECK_LE_W(
+        VELOX_CHECK_LE(
             reinterpret_cast<char*>(header->end()),
             reinterpret_cast<char*>(end));
-        VELOX_CHECK_EQ_W(header->isPreviousFree(), previousFree);
+        VELOX_CHECK_EQ(header->isPreviousFree(), previousFree);
 
         if (header->isFree()) {
           VELOX_CHECK(!previousFree);
           VELOX_CHECK(!header->isContinued());
           if (header->next()) {
-            VELOX_CHECK_EQ_W(
+            VELOX_CHECK_EQ(
                 header->size(),
                 *(reinterpret_cast<int32_t*>(header->end()) - 1));
           }
@@ -614,29 +614,29 @@ int64_t HashStringAllocator::checkConsistency() const {
     }
   }
 
-  VELOX_CHECK_EQ_W(numFree, numFree_);
-  VELOX_CHECK_EQ_W(freeBytes, freeBytes_);
+  VELOX_CHECK_EQ(numFree, numFree_);
+  VELOX_CHECK_EQ(freeBytes, freeBytes_);
   uint64_t numInFreeList = 0;
   uint64_t bytesInFreeList = 0;
   for (auto i = 0; i < kNumFreeLists; ++i) {
     bool hasData = bits::isBitSet(freeNonEmpty_, i);
     bool listNonEmpty = !free_[i].empty();
-    VELOX_CHECK_EQ_W(hasData, listNonEmpty);
+    VELOX_CHECK_EQ(hasData, listNonEmpty);
     for (auto free = free_[i].next(); free != &free_[i]; free = free->next()) {
       ++numInFreeList;
       auto size = headerOf(free)->size();
-      VELOX_CHECK_GE_W(size, kMinAlloc);
+      VELOX_CHECK_GE(size, kMinAlloc);
       if (size - kMinAlloc < kNumFreeLists - 1) {
-        VELOX_CHECK_EQ_W(size - kMinAlloc, i);
+        VELOX_CHECK_EQ(size - kMinAlloc, i);
       } else {
-        VELOX_CHECK_GE_W(size - kMinAlloc, kNumFreeLists - 1);
+        VELOX_CHECK_GE(size - kMinAlloc, kNumFreeLists - 1);
       }
       bytesInFreeList += size + sizeof(Header);
     }
   }
 
-  VELOX_CHECK_EQ_W(numInFreeList, numFree_);
-  VELOX_CHECK_EQ_W(bytesInFreeList, freeBytes_);
+  VELOX_CHECK_EQ(numInFreeList, numFree_);
+  VELOX_CHECK_EQ(bytesInFreeList, freeBytes_);
   return allocatedBytes;
 }
 
@@ -645,8 +645,8 @@ bool HashStringAllocator::isEmpty() const {
 }
 
 void HashStringAllocator::checkEmpty() const {
-  VELOX_CHECK_EQ_W(0, sizeFromPool_);
-  VELOX_CHECK_EQ_W(0, checkConsistency());
+  VELOX_CHECK_EQ(0, sizeFromPool_);
+  VELOX_CHECK_EQ(0, checkConsistency());
 }
 
 void HashStringAllocator::copy(char* FOLLY_NONNULL group, int32_t offset) {
