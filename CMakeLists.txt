@@ -289,11 +289,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 #     "( source ${CMAKE_CURRENT_SOURCE_DIR}/scripts/setup-helper-functions.sh && echo -n $(get_cxx_flags $ENV{CPU_TARGET}))"
 #   OUTPUT_VARIABLE SCRIPT_CXX_FLAGS
 #   RESULT_VARIABLE COMMAND_STATUS)
-execute_process(
-  COMMAND
-    echo -mavx2 -mfma -mavx -mf16c -mlzcnt -std=c++17 -mbmi2 -Wno-c++98-compat
-  OUTPUT_VARIABLE SCRIPT_CXX_FLAGS
-  RESULT_VARIABLE COMMAND_STATUS)
+set(SCRIPT_CXX_FLAGS "-mfma -mavx -mf16c -mlzcnt -mbmi2 -mavx2 -Wno-c++98-compat")
+message(STATUS "HS-SCRIPT_CXX_FLAGS=${SCRIPT_CXX_FLAGS}")
+message(STATUS "HS-CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
 
 if(COMMAND_STATUS EQUAL "1")
   message(FATAL_ERROR "Unable to determine compiler flags!")
