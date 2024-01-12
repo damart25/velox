@@ -247,7 +247,7 @@ class SimpleVector : public BaseVector {
   template <typename U = T>
   typename std::enable_if_t<std::is_same_v<U, StringView>, std::optional<bool>>
   isAscii(vector_size_t index) const {
-    VELOX_CHECK_GE(index, 0)
+    VELOX_CHECK_GE_W(index, 0)
     if (asciiInfo.asciiSetRows().size() > index &&
         asciiInfo.asciiSetRows().isValid(index)) {
       return asciiInfo.isAllAscii();
