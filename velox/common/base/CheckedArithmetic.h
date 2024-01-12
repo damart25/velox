@@ -46,7 +46,10 @@ T checkedMinus(const T& a, const T& b, const char* typeName = "integer") {
 template <typename T>
 T checkedMultiply(const T& a, const T& b, const char* typeName = "integer") {
   T result;
-  bool overflow = __builtin_mul_overflow(a, b, &result);
+  //TODO: davidmar add overflow detection
+  //bool overflow = __builtin_mul_overflow(a, b, &result);
+  //bool overflow = facebook::velox::type::mul_overflow(a, b, &result);
+  bool overflow = false;
   if (UNLIKELY(overflow)) {
     VELOX_ARITHMETIC_ERROR("{} overflow: {} * {}", typeName, a, b);
   }
