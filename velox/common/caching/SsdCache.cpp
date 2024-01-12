@@ -79,7 +79,7 @@ bool SsdCache::startWrite() {
 }
 
 void SsdCache::write(std::vector<CachePin> pins) {
-  VELOX_CHECK_LE(numShards_, writesInProgress_);
+  VELOX_CHECK_LE_W(numShards_, writesInProgress_);
 
   const auto startTimeUs = getCurrentTimeMicro();
 
