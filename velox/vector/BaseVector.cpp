@@ -648,12 +648,12 @@ VectorPtr newConstant(
 }
 
 template <>
-VectorPtr newConstant<TypeKind::OPAQUE>(
+VectorPtr newConstant<TypeKind::OPAQUE_2>(
     const TypePtr& type,
     variant& value,
     vector_size_t size,
     velox::memory::MemoryPool* pool) {
-  const auto& capsule = value.value<TypeKind::OPAQUE>();
+  const auto& capsule = value.value<TypeKind::OPAQUE_2>();
 
   return std::make_shared<ConstantVector<std::shared_ptr<void>>>(
       pool, size, value.isNull(), type, std::shared_ptr<void>(capsule.obj));
@@ -901,7 +901,7 @@ size_t typeSize(const Type& type) {
     case TypeKind::VARCHAR:
     case TypeKind::VARBINARY:
       return sizeof(StringView);
-    case TypeKind::OPAQUE:
+    case TypeKind::OPAQUE_2:
       return sizeof(std::shared_ptr<void>);
     default:
       VELOX_DCHECK(type.isPrimitiveType(), type.toString());
