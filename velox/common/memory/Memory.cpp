@@ -63,7 +63,7 @@ MemoryManager::MemoryManager(const MemoryManagerOptions& options)
       "MemoryAllocator capacity {} must be the same as MemoryManager capacity {}.",
       allocator_->capacity(),
       capacity_);
-  VELOX_USER_CHECK_GE(capacity_, 0);
+  VELOX_USER_CHECK_GE_W(capacity_, 0);
   MemoryAllocator::alignmentCheck(0, alignment_);
   defaultRoot_->grow(defaultRoot_->maxCapacity());
   const size_t numSharedPools =
@@ -130,7 +130,7 @@ std::shared_ptr<MemoryPool> MemoryManager::addRootPool(
       poolDestructionCb_,
       options);
   pools_.emplace(poolName, pool);
-  VELOX_CHECK_EQ(pool->capacity(), 0);
+  VELOX_CHECK_EQ_W(pool->capacity(), 0);
   arbitrator_->reserveMemory(pool.get(), capacity);
   return pool;
 }
@@ -148,7 +148,7 @@ std::shared_ptr<MemoryPool> MemoryManager::addLeafPool(
 
 bool MemoryManager::growPool(MemoryPool* pool, uint64_t incrementBytes) {
   VELOX_CHECK_NOT_NULL(pool);
-  VELOX_CHECK_NE(pool->capacity(), kMaxMemory);
+  VELOX_CHECK_NE_W(pool->capacity(), kMaxMemory);
   return arbitrator_->growMemory(pool, getAlivePools(), incrementBytes);
 }
 
@@ -179,7 +179,7 @@ int64_t MemoryManager::getTotalBytes() const {
 
 size_t MemoryManager::numPools() const {
   size_t numPools = defaultRoot_->getChildCount();
-  VELOX_CHECK_GE(numPools, 0);
+  VELOX_CHECK_GE_W(numPools, 0);
   {
     folly::SharedMutex::ReadHolder guard{mutex_};
     numPools += pools_.size() - sharedLeafPools_.size();

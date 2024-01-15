@@ -16,8 +16,8 @@
 
 #include "velox/common/memory/MmapAllocator.h"
 
-#include <sys/mman.h>
-
+#include <mman/sys/mman.h>
+#include <Windows.h>
 #include "velox/common/base/Portability.h"
 #include "velox/common/memory/Memory.h"
 
@@ -238,7 +238,7 @@ bool MmapAllocator::allocateContiguousImpl(
   if (maxPages == 0) {
     maxPages = numPages;
   } else {
-    VELOX_CHECK_LE(numPages, maxPages);
+    VELOX_CHECK_LE_W(numPages, maxPages);
   }
 
   MachinePageCount numCollateralPages = 0;
@@ -417,7 +417,7 @@ bool MmapAllocator::growContiguousWithoutRetry(
     MachinePageCount increment,
     ContiguousAllocation& allocation,
     ReservationCallback reservationCB) {
-  VELOX_CHECK_LE(
+  VELOX_CHECK_LE_W(
       allocation.size() + increment * AllocationTraits::kPageSize,
       allocation.maxSize());
   if (reservationCB != nullptr) {
@@ -465,7 +465,7 @@ void* MmapAllocator::allocateBytesWithoutRetry(
   alignmentCheck(bytes, alignment);
 
   if (useMalloc(bytes)) {
-    auto* result = alignment > kMinAlignment ? ::aligned_alloc(alignment, bytes)
+    auto* result = alignment > kMinAlignment ? ::_aligned_malloc(bytes, alignment)
                                              : ::malloc(bytes);
     if (FOLLY_UNLIKELY(result == nullptr)) {
       VELOX_MEM_LOG(ERROR) << "Failed to allocateBytes " << bytes
@@ -815,7 +815,7 @@ MachinePageCount MmapAllocator::SizeClass::adviseAway(
     }
     target = std::min(target, numMappedFreePages_);
     allocateLocked(target, nullptr, allocation);
-    VELOX_CHECK_EQ(allocation.numPages(), target * unitSize_);
+    VELOX_CHECK_EQ_W(allocation.numPages(), target * unitSize_);
     numAllocatedMapped_ -= target;
     numAdvisedAway_ += target;
   }
@@ -856,10 +856,10 @@ void MmapAllocator::SizeClass::adviseAway(const Allocation& allocation) {
     if (!isInRange(run.data())) {
       continue;
     }
-    if (::madvise(
+    if (::VirtualFree(
             run.data(),
             AllocationTraits::pageBytes(run.numPages()),
-            MADV_DONTNEED) < 0) {
+            MEM_DECOMMIT) == 0) {
       VELOX_MEM_LOG(ERROR) << "madvise got errno " << folly::errnoStr(errno);
     } else {
       std::lock_guard<std::mutex> l(mutex_);

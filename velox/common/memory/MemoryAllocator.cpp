@@ -17,7 +17,7 @@
 #include "velox/common/memory/MemoryAllocator.h"
 #include "velox/common/memory/MallocAllocator.h"
 
-#include <sys/mman.h>
+#include <mman/sys/mman.h>
 #include <iostream>
 #include <numeric>
 
@@ -171,7 +171,7 @@ MachinePageCount MemoryAllocator::roundUpToSizeClassSize(
     const std::vector<MachinePageCount>& sizes) {
   auto pages = bits::roundUp(bytes, AllocationTraits::kPageSize) /
       AllocationTraits::kPageSize;
-  VELOX_CHECK_LE(pages, sizes.back());
+  VELOX_CHECK_LE_W(pages, sizes.back());
   return *std::lower_bound(sizes.begin(), sizes.end(), pages);
 }
 
