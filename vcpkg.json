@@ -10,7 +10,6 @@
     "folly",
     "xsimd",
     "re2",
-    "pthread",
     "mman"
   ],
   "overrides" : [
