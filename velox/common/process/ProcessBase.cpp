@@ -80,8 +80,10 @@ std::string getHostName() {
 /**
  * Process identifier.
  */
-pid_t getProcessId() {
-  return getpid();
+// TODO: davidmar what are the pid_t used for in Windows and in the process
+// library
+ pid_t getProcessId() {
+  return 0;
 }
 
 /**
