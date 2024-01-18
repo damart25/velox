@@ -417,7 +417,7 @@ void readConstantVector(
   std::vector<TypePtr> childTypes = {type};
   std::vector<VectorPtr> children{BaseVector::create(type, 0, pool)};
   readColumns(source, pool, childTypes, children, useLosslessTimestamp);
-  VELOX_CHECK_EQ(1, children[0]->size());
+  VELOX_CHECK_EQ_W(1, children[0]->size());
   result = BaseVector::wrapInConstant(size, 0, children[0]);
 }
 
@@ -790,7 +790,7 @@ void scatterStructNulls(
   // On return of scatter we check that child sizes match the struct size. This
   // is safe also if no scatter.
   for (auto i = 0; i < row.childrenSize(); ++i) {
-    VELOX_CHECK_EQ(row.childAt(i)->size(), row.size());
+    VELOX_CHECK_EQ_W(row.childAt(i)->size(), row.size());
   }
 }
 
@@ -1955,7 +1955,7 @@ class PrestoVectorSerializer : public VectorSerializer {
   }
 
   void flushEncoded(const RowVectorPtr& vector, OutputStream* out) {
-    VELOX_CHECK_EQ(0, numRows_);
+    VELOX_CHECK_EQ_W(0, numRows_);
 
     std::vector<IndexRange> ranges{{0, vector->size()}};
     appendEncoded(vector, folly::Range(ranges.data(), ranges.size()));
@@ -2196,7 +2196,7 @@ void PrestoVectorSerde::deserialize(
     ByteStream uncompressedSource;
     uncompressedSource.resetInput({byteRange});
     auto numColumns = uncompressedSource.read<int32_t>();
-    VELOX_CHECK_EQ(numColumns, type->as<TypeKind::ROW>().size());
+    VELOX_CHECK_EQ_W(numColumns, type->as<TypeKind::ROW>().size());
     readColumns(
         &uncompressedSource, pool, childTypes, children, useLosslessTimestamp);
   }

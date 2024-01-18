@@ -586,7 +586,7 @@ void VectorFuzzer::fuzzOffsetsAndSizes(
   auto rawOffsets = offsets->asMutable<vector_size_t>();
   auto rawSizes = sizes->asMutable<vector_size_t>();
 
-  size_t containerAvgLength = std::max(elementsSize / size, 1UL);
+  size_t containerAvgLength = std::max(elementsSize / size, 1ULL);
   size_t childSize = 0;
   size_t length = 0;
 
