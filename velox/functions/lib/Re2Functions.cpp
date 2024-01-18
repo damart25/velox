@@ -193,7 +193,7 @@ class Re2MatchConstantPattern final : public VectorFunction {
       const TypePtr& /* outputType */,
       EvalCtx& context,
       VectorPtr& resultRef) const final {
-    VELOX_CHECK_EQ(args.size(), 2);
+    VELOX_CHECK_EQ_W(args.size(), 2);
     FlatVector<bool>& result = ensureWritableBool(rows, context, resultRef);
     exec::LocalDecodedVector toSearch(context, *args[0], rows);
     try {
@@ -221,7 +221,7 @@ class Re2Match final : public VectorFunction {
       const TypePtr& outputType,
       EvalCtx& context,
       VectorPtr& resultRef) const override {
-    VELOX_CHECK_EQ(args.size(), 2);
+    VELOX_CHECK_EQ_W(args.size(), 2);
     if (auto pattern = getIfConstant<StringView>(*args[1])) {
       Re2MatchConstantPattern<Fn>(*pattern).apply(
           rows, args, outputType, context, resultRef);
@@ -628,7 +628,7 @@ class LikeGeneric final : public VectorFunction {
         vectorWriter.commit(true);
       });
     } else {
-      VELOX_CHECK_EQ(args.size(), 3);
+      VELOX_CHECK_EQ_W(args.size(), 3);
       exec::VectorReader<Varchar> escapeReader(decodedArgs.at(2));
       context.applyToSelectedNoThrow(rows, [&](auto row) {
         vectorWriter.setOffset(row);

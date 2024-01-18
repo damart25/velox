@@ -21,6 +21,18 @@
 #include <direct.h>
 namespace facebook::velox::common {
 
+bool generateFileDirectory(const fs::path::value_type* dirPath) {
+  std::error_code errorCode;
+  const auto success = fs::create_directories(dirPath, errorCode);
+  fs::permissions(dirPath, fs::perms::all, fs::perm_options::replace);
+  if (!success && errorCode.value() != 0) {
+    LOG(ERROR) << "Failed to create file directory '" << dirPath
+               << "'. Error: " << errorCode.message() << " errno "
+               << errorCode.value();
+    return false;
+  }
+  return true;
+}
 bool generateFileDirectory(const char* dirPath) {
   std::error_code errorCode;
   const auto success = fs::create_directories(dirPath, errorCode);

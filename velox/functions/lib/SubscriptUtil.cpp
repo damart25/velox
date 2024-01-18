@@ -229,7 +229,7 @@ VectorPtr applyMapComplexType(
     }
 
     rows.applyToSelected([&](vector_size_t row) {
-      VELOX_CHECK_EQ(0, mapIndices[row]);
+      VELOX_CHECK_EQ_W(0, mapIndices[row]);
 
       bool found = false;
       auto searchIndex = searchIndices[row];

@@ -186,7 +186,7 @@ struct AsJson {
         std::vector<VectorPtr> peeledVectors;
         auto peeledEncoding = exec::PeeledEncoding::peel(
             {input}, rows, localDecoded, true, peeledVectors);
-        VELOX_CHECK_EQ(peeledVectors.size(), 1);
+        VELOX_CHECK_EQ_W(peeledVectors.size(), 1);
         auto newRows =
             peeledEncoding->translateToInnerRows(rows, newRowsHolder);
         // Save context and set the peel.
@@ -460,7 +460,7 @@ void castToJsonFromRow(
     const SelectivityVector& rows,
     FlatVector<StringView>& flatResult) {
   // input is guaranteed to be in flat encoding when passed in.
-  VELOX_CHECK_EQ(input.encoding(), VectorEncoding::Simple::ROW);
+  VELOX_CHECK_EQ_W(input.encoding(), VectorEncoding::Simple::ROW);
   auto inputRow = input.as<RowVector>();
   auto childrenSize = inputRow->childrenSize();
 
