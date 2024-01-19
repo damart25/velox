@@ -40,7 +40,7 @@
 #include "velox/type/StringView.h"
 #include "velox/type/Timestamp.h"
 #include "velox/type/Tree.h"
-#include "velox/type/Int128.h"
+#include "velox/type/custom_type/Int128.h"
 namespace facebook::velox {
 
 using int128_t = type::int128;

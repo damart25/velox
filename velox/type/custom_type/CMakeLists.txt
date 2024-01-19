@@ -11,40 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-if(${VELOX_BUILD_TESTING})
-  add_subdirectory(tests)
-endif()
+add_library(velox_type_custom_type Int128.cpp)
 
-add_subdirectory(tz)
-add_subdirectory(fbhive)
-add_subdirectory(custom_type)
+target_link_libraries(velox_type_custom_type velox_type)
 
-add_library(
-  velox_type
-  Conversions.cpp
-  DecimalUtil.cpp
-  DoubleUtil.cpp
-  Filter.cpp
-  HugeInt.cpp
-  StringView.cpp
-  StringView.h
-  Subfield.cpp
-  Timestamp.cpp
-  TimestampConversion.cpp
-  Tokenizer.cpp
-  Type.cpp
-  Variant.cpp
-  )
-
-target_link_libraries(
-  velox_type
-  velox_type_tz
-  velox_common_base
-  velox_encode
-  velox_exception
-  velox_serialization
-  velox_external_date
-  velox_custom_type
-  Boost::headers
-  Folly::folly
-  re2::re2)
