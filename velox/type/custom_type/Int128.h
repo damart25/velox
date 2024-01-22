@@ -309,7 +309,14 @@ class int128 {
   }
   constexpr int128 operator+(const int& other) const {
     return *this + int128(other);
+  }   
+  constexpr int128 operator+=(const int& other) const {
+    return int128(0);
   } 
+  //TODO
+  constexpr int128 operator--() const {
+    return int128();
+  }
   constexpr int128 operator-(const int128& other) const {
     uint64_t lo = this->lo_ - other.lo_;
     // Check for overflow.
@@ -343,6 +350,9 @@ class int128 {
   }
   //TODO: implement >=
   constexpr bool operator>=(const int128& other) const {
+    return true;
+  }  
+  constexpr bool operator>=(const int& other) const {
     return true;
   }
 
@@ -411,6 +421,10 @@ class int128 {
 };
 
 bool mul_overflow(int128 a , int128 b ,int64_t result) {
+  return true;
+
+}
+bool mul_overflow(int128 a , int128 b ,int128 *result) {
   return true;
 
 } // namespace facebook

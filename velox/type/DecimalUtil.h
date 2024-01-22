@@ -158,7 +158,7 @@ class DecimalUtil {
     auto scaleDifference = toScale - fromScale;
     bool isOverflow = false;
     if (scaleDifference >= 0) {
-      isOverflow = __builtin_mul_overflow(
+      isOverflow = velox::type::mul_overflow(
           rescaledValue,
           DecimalUtil::kPowersOfTen[scaleDifference],
           &rescaledValue);
@@ -190,7 +190,7 @@ class DecimalUtil {
       const int toPrecision,
       const int toScale) {
     int128_t rescaledValue = static_cast<int128_t>(inputValue);
-    bool isOverflow = __builtin_mul_overflow(
+    bool isOverflow = velox::type::mul_overflow(
         rescaledValue, DecimalUtil::kPowersOfTen[toScale], &rescaledValue);
     // Check overflow.
     if (!valueInPrecisionRange(rescaledValue, toPrecision) || isOverflow) {
