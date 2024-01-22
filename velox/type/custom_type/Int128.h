@@ -163,6 +163,10 @@ class uint128 {
   constexpr uint128 operator*=(const int64_t& other) const {
     return uint128(0);
   }
+  // TODO: davidmar implement /= operator.
+  uint128 operator/=(int other) const {
+    return *this;
+  }
 
 
   operator int64_t() const {
