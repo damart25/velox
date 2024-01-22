@@ -117,7 +117,7 @@ void UnsafeRowVectorSerde::deserialize(
     auto rowSize =
         folly::Endian::big(source->read<UnsafeRowVectorSerializer::TRowSize>());
     auto row = source->nextView(rowSize);
-    VELOX_CHECK_EQ(row.size(), rowSize);
+    VELOX_CHECK_EQ_W(row.size(), rowSize);
     serializedRows.push_back(row);
   }
 
