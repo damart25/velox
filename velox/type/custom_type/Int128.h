@@ -424,6 +424,10 @@ bool mul_overflow(int128 a , int128 b ,int64_t result) {
   return true;
 
 }
+bool add_overflow(int128 a , int128 b ,int64_t result) {
+  return true;
+
+}
 bool mul_overflow(int128 a , int128 b ,int128 *result) {
   return true;
 
