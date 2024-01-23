@@ -32,6 +32,25 @@
 #include "velox/functions/lib/RowsTranslationUtil.h"
 #include "velox/type/Type.h"
 
+
+namespace std {
+
+template <>
+struct is_convertible<facebook::velox::type::int128, const char*>
+    : std::true_type {};
+
+} // namespace std
+namespace folly {
+// TODO: davidmar, implement append for int128 (requires int128 to string/char*)
+template <>
+void toAppend<std::string, facebook::velox::type::int128>(
+    facebook::velox::type::int128 value,
+    std::string* result) {
+  return;
+}
+} // namespace folly
+
+
 namespace facebook::velox {
 namespace {
 
@@ -914,3 +933,4 @@ void registerJsonType() {
 }
 
 } // namespace facebook::velox
+
