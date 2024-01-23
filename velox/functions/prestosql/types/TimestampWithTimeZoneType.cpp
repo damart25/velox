@@ -61,7 +61,7 @@ void castToTimestampWithTimeZone(
     exec::EvalCtx& context,
     const SelectivityVector& rows,
     RowVector& rowResult) {
-  VELOX_CHECK_EQ(kind, TypeKind::TIMESTAMP)
+  VELOX_CHECK_EQ_W(kind, TypeKind::TIMESTAMP)
   const auto inputVector = input.as<SimpleVector<Timestamp>>();
   castFromTimestamp(*inputVector, context, rows, rowResult);
 }
@@ -98,7 +98,7 @@ void castFromTimestampWithTimeZone(
     exec::EvalCtx& context,
     const SelectivityVector& rows,
     BaseVector& result) {
-  VELOX_CHECK_EQ(kind, TypeKind::TIMESTAMP)
+  VELOX_CHECK_EQ_W(kind, TypeKind::TIMESTAMP)
 
   const auto inputVector = input.as<RowVector>();
   auto flatResult = result.as<FlatVector<Timestamp>>();
