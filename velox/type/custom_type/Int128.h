@@ -347,6 +347,10 @@ class int128 {
   //TODO: implement <= 
   constexpr bool operator<=(const int128& other) const {
     return true;
+  }  
+  //TODO: implement <= 
+  constexpr bool operator<=(const int& other) const {
+    return true;
   }
   //TODO: implement >=
   constexpr bool operator>=(const int128& other) const {
@@ -354,7 +358,7 @@ class int128 {
   }  
   constexpr bool operator>=(const int& other) const {
     return true;
-  }
+  }  
 
   //TODO: implement division
   constexpr int128 operator/(const int& other) const {
@@ -424,7 +428,10 @@ bool mul_overflow(int128 a , int128 b ,int64_t result) {
   return true;
 
 }
-bool add_overflow(int128 a , int128 b ,int64_t result) {
+bool add_overflow(int128 a , int128 b ,int128* result) {
+  return true;
+
+}bool sub_overflow(int128 a , int128 b ,int128* result) {
   return true;
 
 }

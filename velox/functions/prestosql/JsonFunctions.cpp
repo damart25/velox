@@ -40,7 +40,7 @@ class JsonFormatFunction : public exec::VectorFunction {
       auto flatInput = arg->asFlatVector<StringView>();
 
       auto stringBuffers = flatInput->stringBuffers();
-      VELOX_CHECK_LE(rows.end(), flatInput->size());
+      VELOX_CHECK_LE_W(rows.end(), flatInput->size());
       localResult = std::make_shared<FlatVector<StringView>>(
           context.pool(),
           VARCHAR(),
@@ -91,7 +91,7 @@ class JsonParseFunction : public exec::VectorFunction {
       auto flatInput = arg->asFlatVector<StringView>();
 
       auto stringBuffers = flatInput->stringBuffers();
-      VELOX_CHECK_LE(rows.end(), flatInput->size());
+      VELOX_CHECK_LE_W(rows.end(), flatInput->size());
 
       context.applyToSelectedNoThrow(
           rows, [&](auto row) { folly::parseJson(flatInput->valueAt(row)); });
