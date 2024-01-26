@@ -309,14 +309,39 @@ class int128 {
   }
   constexpr int128 operator+(const int& other) const {
     return *this + int128(other);
-  }   
-  constexpr int128 operator+=(const int& other) const {
-    return int128(0);
-  } 
-  //TODO
-  constexpr int128 operator--() const {
-    return int128();
   }
+
+  // TODO implement +=
+  constexpr int128 operator+=(const int& other) const {
+    int128 temp = *this;
+    temp = *this + int128(other);
+    return temp;
+  } 
+
+  constexpr int128 operator++() const {
+    // predecrement
+    return *this + 1;
+  }
+
+  constexpr int128 operator++(int) {
+    // postdecrement
+    int128 temp(*this); // Create a copy of the current object
+    *this + 1;
+    return temp; // Return the copy (previous value)
+  }
+
+  constexpr int128 operator--() const {
+    //predecrement
+    return *this - 1;
+  }
+
+ constexpr int128 operator--(int) {
+     //postdecrement
+    int128 temp(*this); // Create a copy of the current object
+    *this - 1;
+    return temp; // Return the copy (previous value)
+  }
+
   constexpr int128 operator-(const int128& other) const {
     uint64_t lo = this->lo_ - other.lo_;
     // Check for overflow.
@@ -332,6 +357,14 @@ class int128 {
   constexpr int128 operator-() const {
     return int128(0) - *this;
   }
+
+  //TODO implement -=
+  constexpr int128 operator-=(const int& other) const {
+    int128 temp = *this;
+    temp = *this - int128(other);
+    return temp;
+  } 
+
   constexpr bool operator<(const int128& other) const {
       int128 result = *this - other;
     return result.hi_ < 0;
@@ -344,27 +377,78 @@ class int128 {
       int128 result = *this - int128(other);
     return result < int128(0);
   }
-  //TODO: implement <= 
+ 
   constexpr bool operator<=(const int128& other) const {
-    return true;
+    int128 result = *this - other;
+    if (result = int128(0)) {
+        return true
+    } 
+    else {
+        return result.hi_ < 0;
+    }
   }
-  //TODO: implement >=
+
+  constexpr bool operator<=(const int64_t& other) const {
+    int128 result = *this - int128(other);
+    return result <= int128(0);
+  }
+
+  constexpr bool operator<=(const int& other) const {
+    int128 result = *this - int128(other);
+    return result <= int128(0);
+  }
+
+  constexpr bool operator>(const int128& other) const {
+    int128 result = *this - other;
+    return result.hi_ > 0;
+  }
+  constexpr bool operator>(const int64_t& other) const {
+    int128 result = *this - int128(other);
+    return result > int128(0);
+  }
+  constexpr bool operator>(const int& other) const {
+    int128 result = *this - int128(other);
+    return result > int128(0);
+  }
+
+
   constexpr bool operator>=(const int128& other) const {
-    return true;
-  }  
+    int128 result = *this - other;
+    if (result = int128(0)) {
+        return true
+    } else {
+        return result.hi_ > 0;
+    }
+  }
+  constexpr bool operator>=(const int64_t& other) const {
+    int128 result = *this - int128(other);
+    return result >= int128(0);
+  }
   constexpr bool operator>=(const int& other) const {
-    return true;
+    int128 result = *this - int128(other);
+    return result >= int128(0);
   }
 
   //TODO: implement division
   constexpr int128 operator/(const int& other) const {
-    return int128(0);
+    return *this / int128(other);
   }    
   constexpr int128 operator/(const int64_t& other) const {
-    return int128(0);
+    return *this / int128(other);
   }  
   constexpr int128 operator/(const int128& other) const {
-    return int128(0);
+    if (other.lo_ == 0 && other.hi_ == 0) {
+        // Division by zero exception
+        throw std::invalid_argument("Division by Zero Exception");
+    }
+    int128 result;
+    int128 dividend(*this);
+    while (dividend >= other) {
+        dividend -= other;
+        ++result;
+    }
+
+    return result;
   }
 
   //TODO: implement modulo
@@ -381,15 +465,19 @@ class int128 {
   }  
   // TODO: implement multiply
   constexpr int128 operator*(const int64_t other) const {
-    return int128(0);
+    return *this * int128(other);
   }
   //TODO: implement multiply
   constexpr int128 operator*(const int& other) const {
-    return int128(0);
+    return *this * int128(other);
   }
   //TODO: implement multply
   constexpr int128 operator*(const int128& other) const {
-    return int128(0);
+    int128 mul;
+    for (int i = 0; i < *this; i++) {
+        mul = mul + other;
+    }
+    return mul;
   }  
   
   //TODO: implement multply=
