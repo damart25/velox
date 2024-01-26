@@ -20,6 +20,7 @@
 #include <string>
 #include "folly/Likely.h"
 #include "velox/common/base/Exceptions.h"
+#include "velox/type/custom_type/Int128.h"
 
 namespace facebook::velox {
 
@@ -32,11 +33,36 @@ T checkedPlus(const T& a, const T& b, const char* typeName = "integer") {
   }
   return result;
 }
+template <>
+type::int128 checkedPlus<type::int128>(
+    const type::int128& a,
+    const type::int128& b, const char* typeName) {
+       
+    type::int128 result;
+    bool overflow = type::add_overflow(a,b, &result);
+    if (UNLIKELY(overflow)) {
+        VELOX_ARITHMETIC_ERROR("{} overflow: {} + {}", typeName, a, b);
+    }
+    return result;
+
+}
 
 template <typename T>
 T checkedMinus(const T& a, const T& b, const char* typeName = "integer") {
   T result;
   bool overflow = __builtin_sub_overflow(a, b, &result);
+  if (UNLIKELY(overflow)) {
+    VELOX_ARITHMETIC_ERROR("{} overflow: {} - {}", typeName, a, b);
+  }
+  return result;
+}
+template <>
+type::int128 checkedMinus(
+    const type::int128& a,
+    const type::int128& b,
+    const char* typeName) {
+  type::int128 result;
+  bool overflow = type::sub_overflow(a, b, &result);
   if (UNLIKELY(overflow)) {
     VELOX_ARITHMETIC_ERROR("{} overflow: {} - {}", typeName, a, b);
   }
