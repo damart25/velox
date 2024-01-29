@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 #include <utility>
+#include <cmath>
 #include <folly/dynamic.h>
 
 namespace facebook::velox::type {
@@ -463,6 +464,10 @@ template <>
 struct make_unsigned<facebook::velox::type::int128> {
   using type = facebook::velox::type::uint128; 
 };
+// TODO: Implemente std::log for int128 
+double log(facebook::velox::type::int128 value) {
+  return 0.0;
+}
 
 
 } // namespace std
