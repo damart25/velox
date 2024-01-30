@@ -23,6 +23,7 @@
 #include <stdint.h>
 #include <utility>
 #include <folly/dynamic.h>
+#include <iostream>
 
 namespace facebook::velox::type {
 
@@ -382,9 +383,9 @@ class int128 {
  
   constexpr bool operator<=(const int128& other) const {
     int128 result = *this - other;
-    if (result = int128(0)) {
-        return true
-    } 
+    if (result == int128(0)) {
+      return true;
+    }
     else {
         return result.hi_ < 0;
     }
@@ -417,7 +418,7 @@ class int128 {
   constexpr bool operator>=(const int128& other) const {
     int128 result = *this - other;
     if (result = int128(0)) {
-        return true
+        return true;
     } else {
         return result.hi_ > 0;
     }
