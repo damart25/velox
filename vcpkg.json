@@ -10,7 +10,9 @@
     "folly",
     "xsimd",
     "re2",
-    "mman"
+    "mman",
+    "cpr",
+    "gtest"
   ],
   "overrides" : [
     {
@@ -28,6 +30,10 @@
     {
       "name" : "folly",
       "version" : "2022.11.14"
+    },
+    {
+      "name" : "gtest",
+      "version" : "1.13.0"
     }
   ],
   "vcpkg-configuration" : {
