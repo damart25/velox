@@ -295,7 +295,9 @@ class int128 {
   }
   //TODO: davidmar implement /= operator.
   int128 operator/=(int other) const {
-    return *this;
+    int128 temp = *this;
+    temp = *this / int128(other);
+    return temp;
   }
 
   
@@ -453,16 +455,29 @@ class int128 {
 
   //TODO: implement modulo
   constexpr int128 operator%(const int64_t& other) const {
-    return int128(0);
+    return *this % int128(other);
   }
   //TODO: implement modulo
   constexpr int128 operator%(const int& other) const {
-    return int128(0);
+    return *this % int128(other);
   }
   //TODO: implement modulo
   constexpr int128 operator%(const int128& other) const {
-    return int128(0);
+    if (other.lo_ == 0 && other.hi_ == 0) {
+        // Division by zero exception
+        throw std::invalid_argument("Division by Zero Exception");
+    }
+    int128 dividend(*this); // Copy of the dividend
+    int128 divisor(other);
+
+    // Perform modulo operation
+    while (dividend >= divisor) {
+        dividend -= divisor;
+    }
+
+    return dividend;
   }  
+
   // TODO: implement multiply
   constexpr int128 operator*(const int64_t other) const {
     return *this * int128(other);
@@ -482,15 +497,21 @@ class int128 {
   
   //TODO: implement multply=
   constexpr int128 operator*=(const int128& other) const {
-    return int128(0);
+    int128 temp = *this;
+    temp = *this * other;
+    return temp;
   }  
   //TODO: implement multply=
   constexpr int128 operator*=(const int& other) const {
-    return int128(0);
+    int128 temp = *this;
+    temp = *this * int128(other);
+    return temp;
   }
   // TODO: implement multiply=
   constexpr int128 operator*=(const int64_t& other) const {
-    return int128(0);
+    int128 temp = *this;
+    temp = *this * int128(other);
+    return temp;
   }
 
 
