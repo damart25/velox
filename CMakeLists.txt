@@ -543,6 +543,19 @@ endif()
 
 include(CTest) # include after project() but before add_subdirectory()
 
+#TODO: Davidmar, change references to include testing: 
+
+
+# enable_testing()
+
+# find_package(GTest CONFIG REQUIRED)
+# target_link_libraries(main PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+
+
+set(cpr_SOURCE AUTO)
+resolve_dependency(cpr)
+
+
 include_directories(.)
 
 # TODO: Include all other installation files. For now just making sure this

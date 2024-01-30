@@ -11,9 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-add_library(velox_type_custom_type Int128.cpp)
 
-target_link_libraries(velox_type_custom_type Folly::folly)
+add_executable(velox_type_custom_type_test Int128Tests.cpp)
 
-add_subdirectory(test)
+# add_test(
+#   NAME velox_type_custom_type_test
+#   COMMAND velox_type_custom_type_test
+#   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+enable_testing()
+    
+find_package(GTest CONFIG REQUIRED)
+target_link_libraries(velox_type_custom_type_test GTest::gtest GTest::gtest_main)
 
+add_test(velox_type_custom_type_test velox_type_custom_type_test)
+
+# target_link_libraries(velox_type_custom_type_test gflags::gflags Gtest::gtest)
