@@ -15,7 +15,7 @@
  */
 
 #include "velox/dwio/common/BitPackDecoder.h"
-#include "velox/type/Int128.h"
+#include "velox/type/custom_type/Int128.h"
 namespace facebook::velox::dwio::common {
 
 using int128_t = type::int128;

@@ -167,7 +167,7 @@ void HashAggregation::initialize() {
 
     // Sorting keys and orders.
     const auto numSortingKeys = aggregate.sortingKeys.size();
-    VELOX_CHECK_EQ(numSortingKeys, aggregate.sortingOrders.size());
+    VELOX_CHECK_EQ_W(numSortingKeys, aggregate.sortingOrders.size());
     info.sortingOrders = aggregate.sortingOrders;
 
     info.sortingKeys.reserve(numSortingKeys);
@@ -302,7 +302,7 @@ void HashAggregation::recordSpillStats() {
   if (!spillStatsOr.has_value()) {
     return;
   }
-  VELOX_CHECK_EQ(spillStatsOr.value().spillRuns, 0);
+  VELOX_CHECK_EQ_W(spillStatsOr.value().spillRuns, 0);
   spillStatsOr.value().spillRuns = numSpillRuns_;
   Operator::recordSpillStats(spillStatsOr.value());
 }
@@ -505,8 +505,8 @@ void HashAggregation::reclaim(
     // having row container memory compaction support later.
     groupingSet_->spill(0, targetBytes);
   }
-  VELOX_CHECK_EQ(groupingSet_->numRows(), 0);
-  VELOX_CHECK_EQ(groupingSet_->numDistinct(), 0);
+  VELOX_CHECK_EQ_W(groupingSet_->numRows(), 0);
+  VELOX_CHECK_EQ_W(groupingSet_->numDistinct(), 0);
   // Release the minimum reserved memory.
   pool()->release();
 }

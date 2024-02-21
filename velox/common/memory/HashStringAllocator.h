@@ -450,6 +450,10 @@ struct StlAllocator {
       : allocator_{allocator} {
     VELOX_CHECK(allocator);
   }
+  //TODO: davidmar, created constructor
+  StlAllocator() {
+    allocator_ = new HashStringAllocator();
+  }
 
   template <class U>
   explicit StlAllocator(const StlAllocator<U>& allocator)

@@ -1037,13 +1037,13 @@ bool GroupingSet::getOutputWithSpill(
 
     initializeAggregates(aggregates_, *mergeRows_, false);
 
-    VELOX_CHECK_EQ(table_->rows()->numRows(), 0);
+    VELOX_CHECK_EQ_W(table_->rows()->numRows(), 0);
     const auto nonSpillRows = spiller_->finishSpill();
     VELOX_CHECK(nonSpillRows.empty());
 
     merge_ = spiller_->startMerge(0);
   }
-  VELOX_CHECK_EQ(spiller_->state().maxPartitions(), 1);
+  VELOX_CHECK_EQ_W(spiller_->state().maxPartitions(), 1);
   VELOX_CHECK_NOT_NULL(merge_);
 
   return mergeNext(maxOutputRows, maxOutputBytes, result);
@@ -1127,7 +1127,7 @@ void GroupingSet::abandonPartialAggregation() {
     }
   }
 
-  VELOX_CHECK_EQ(table_->rows()->numRows(), 0);
+  VELOX_CHECK_EQ_W(table_->rows()->numRows(), 0);
   intermediateRows_ = std::make_unique<RowContainer>(
       table_->rows()->keyTypes(),
       !ignoreNullKeys_,

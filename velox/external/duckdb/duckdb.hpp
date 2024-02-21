@@ -3301,7 +3301,7 @@ public:
 	DUCKDB_API Allocator(allocate_function_ptr_t allocate_function_p, free_function_ptr_t free_function_p,
 	                     reallocate_function_ptr_t reallocate_function_p,
 	                     unique_ptr<PrivateAllocatorData> private_data);
-	DUCKDB_API Allocator &operator=(Allocator &&allocator) noexcept = delete;
+	Allocator &operator=(Allocator &&allocator) noexcept = delete;
 	DUCKDB_API ~Allocator();
 
 	data_ptr_t AllocateData(idx_t size);
@@ -3632,8 +3632,8 @@ public:
 	DUCKDB_API BufferHandle(shared_ptr<BlockHandle> handle, FileBuffer *node);
 	DUCKDB_API ~BufferHandle();
 	// disable copy constructors
-	DUCKDB_API BufferHandle(const BufferHandle &other) = delete;
-	DUCKDB_API BufferHandle &operator=(const BufferHandle &) = delete;
+	BufferHandle(const BufferHandle &other) = delete;
+	BufferHandle &operator=(const BufferHandle &) = delete;
 	//! enable move constructors
 	DUCKDB_API BufferHandle(BufferHandle &&other) noexcept;
 	DUCKDB_API BufferHandle &operator=(BufferHandle &&) noexcept;
@@ -11945,7 +11945,7 @@ public:
 	DUCKDB_API ColumnDependencyManager();
 	DUCKDB_API ~ColumnDependencyManager();
 	DUCKDB_API ColumnDependencyManager(ColumnDependencyManager &&other) = default;
-	DUCKDB_API ColumnDependencyManager(const ColumnDependencyManager &other) = delete;
+	ColumnDependencyManager(const ColumnDependencyManager &other) = delete;
 
 public:
 	//! Get the bind order that ensures dependencies are resolved before dependents are

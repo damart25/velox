@@ -9,9 +9,9 @@
 //===----------------------------------------------------------------------===//
 
 
-
+#define DUCK_DB
 #include <functional>
-#include "velox/type/Int128.h"
+#include "velox/type/custom_type/Int128.h"
 
 
 
@@ -2759,8 +2759,8 @@ template <typename T> struct std_string_view {};
 // Do nothing.
 #elif defined(__SIZEOF_INT128__)
 #  define FMT_USE_INT128 1
-using int128_t = type::int128;
-using uint128_t = type::int128;
+using int128_t = facebook::velox::type::int128;
+using uint128_t = facebook::velox::type::uint128;
 #else
 #  define FMT_USE_INT128 0
 #endif
@@ -7367,12 +7367,12 @@ template <class Char> class formatbuf : public std::basic_streambuf<Char> {
 template <typename Char> struct test_stream : std::basic_ostream<Char> {
  private:
   // Hide all operator<< from std::basic_ostream<Char>.
-  void_t<> operator<<(null<>);
-  void_t<> operator<<(const Char*);
+  std::void_t<> operator<<(null<>);
+  std::void_t<> operator<<(const Char*);
 
   template <typename T, FMT_ENABLE_IF(std::is_convertible<T, int>::value &&
                                       !std::is_enum<T>::value)>
-  void_t<> operator<<(T);
+  std::void_t<> operator<<(T);
 };
 
 // Checks if T has a user-defined operator<< (e.g. not a member of
@@ -7382,7 +7382,7 @@ template <typename T, typename Char> class is_streamable {
   template <typename U>
   static bool_constant<!std::is_same<decltype(std::declval<test_stream<Char>&>()
                                               << std::declval<U>()),
-                                     void_t<>>::value>
+                                     std::void_t<>>::value>
   test(int);
 
   template <typename> static std::false_type test(...);

@@ -2133,8 +2133,15 @@ inline std::string to(const Timestamp& value) {
 //TODO: davidmar implement toString function for int128_t
 template <>
 inline std::string to(const int128_t& value) {
-  //return std::string(value);
+  //return std::string(value);D
   return "TODO: davidmar implement toString function for int128_t";
+}
+
+//TODO: davidmar implement toString function for uint128
+template <>
+inline std::string to(const uint128_t& value) {
+  //return std::string(value);
+  return "TODO: davidmar implement toString function for uint128_t";
 }
 
 template <>
@@ -2355,6 +2362,19 @@ struct hasher<::facebook::velox::UnknownValue> {
     return 0;
   }
 };
+// TODO: davidmar implement toString function for int128_t
+template <>
+inline std::string to<std::string, int128_t>(const int128_t& value) {
+  // return std::string(value);D
+  return "TODO: davidmar implement toString function for int128_t";
+}
+
+// TODO: davidmar implement toString function for uint128
+template <>
+inline std::string to<std::string>(const uint128_t& value) {
+  // return std::string(value);
+  return "TODO: davidmar implement toString function for uint128_t";
+}
 
 // Helper functions to allow TypeKind and some common variations to be
 // transparently used by folly::sformat.
