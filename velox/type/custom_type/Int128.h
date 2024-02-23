@@ -27,6 +27,8 @@
 #include <folly/dynamic.h>
 #endif
 
+#include <boost/multiprecision/cpp_int.hpp>
+
 namespace facebook::velox::type {
 
 /**
@@ -449,6 +451,10 @@ class int128 {
     return this->lo_;
   }
 
+  operator boost::multiprecision::int256_t() const {
+    return boost::multiprecision::int256_t(0);
+  }
+
   operator uint128() const {
     return uint128(this->hi_, this->lo_);
   }
@@ -523,4 +529,14 @@ template <>
 struct hasher<facebook::velox::type::uint128> : detail::integral_hasher<facebook::velox::type::uint128> {};
 } // namespace folly
 #endif
+
+
+namespace boost::multiprecision{
+
+template<>
+inline int256_t int256_t::operator*(int128_t other) {
+    return int256_t(other);
+}
+
+}
 #endif /* TYPE_INT128_H__ */

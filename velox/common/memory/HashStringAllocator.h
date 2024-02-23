@@ -452,7 +452,8 @@ struct StlAllocator {
   }
   //TODO: davidmar, created constructor
   StlAllocator() {
-    allocator_ = new HashStringAllocator();
+    // Initializing an alocator requires a pool. Let's try to understand why is te contructor needed. in the first place.
+    //allocator_ = new HashStringAllocator();
   }
 
   template <class U>
