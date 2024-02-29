@@ -40,10 +40,10 @@
 #include "velox/type/StringView.h"
 #include "velox/type/Timestamp.h"
 #include "velox/type/Tree.h"
-#include "velox/type/custom_type/Int128.h"
+#include <boost/multiprecision/cpp_int.hpp>
 namespace facebook::velox {
 
-using int128_t = type::int128;
+using int128_t = boost::multiprecision::int128_t;
 
 /// Velox type system supports a small set of SQL-compatible composeable types:
 /// BOOLEAN, TINYINT, SMALLINT, INTEGER, BIGINT, HUGEINT, REAL, DOUBLE, VARCHAR,

@@ -75,12 +75,12 @@ int32_t DecimalUtil::getByteArrayLength(int128_t value) {
 
 int32_t DecimalUtil::toByteArray(int128_t value, char* out) {
   int32_t length = getByteArrayLength(value);
-  auto lowBig = folly::Endian::big<int64_t>(value);
+  auto lowBig = folly::Endian::big<int64_t>((int64_t) value);
   uint8_t* lowAddr = reinterpret_cast<uint8_t*>(&lowBig);
   if (length <= sizeof(int64_t)) {
     memcpy(out, lowAddr + sizeof(int64_t) - length, length);
   } else {
-    auto highBig = folly::Endian::big<int64_t>(value >> 64);
+    auto highBig = folly::Endian::big<int64_t>( (int64_t) (value >> 64) );
     uint8_t* highAddr = reinterpret_cast<uint8_t*>(&highBig);
     memcpy(out, highAddr + sizeof(int128_t) - length, length - sizeof(int64_t));
     memcpy(out + length - sizeof(int64_t), lowAddr, sizeof(int64_t));

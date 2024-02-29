@@ -97,7 +97,7 @@ StringView convertToStringView(
     auto [position, errorCode] = std::to_chars(
         writePosition,
         writePosition + maxVarcharSize,
-        unscaledValue / DecimalUtil::kPowersOfTen[scale]);
+        (uint64_t) (unscaledValue / DecimalUtil::kPowersOfTen[scale]));
     VELOX_DCHECK_EQ(
         errorCode,
         std::errc(),
@@ -107,7 +107,8 @@ StringView convertToStringView(
 
     if (scale > 0) {
       *writePosition++ = '.';
-      uint128_t fraction = unscaledValue % DecimalUtil::kPowersOfTen[scale];
+      uint128_t fraction = (uint128_t)unscaledValue %
+          (uint128_t) DecimalUtil::kPowersOfTen[scale];
       // Append leading zeros.
       int numLeadingZeros = std::max(scale - countDigits(fraction), 0);
       std::memset(writePosition, '0', numLeadingZeros);
@@ -219,7 +220,6 @@ void CastExpr::applyCastKernel(
       }
     }
   }
-
   auto output = util::Converter<ToKind, void, Truncate>::cast(inputRowValue);
 
   if constexpr (ToKind == TypeKind::VARCHAR || ToKind == TypeKind::VARBINARY) {

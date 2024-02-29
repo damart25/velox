@@ -21,6 +21,7 @@
 #include "velox/vector/BuilderTypeUtils.h"
 #include "velox/vector/ConstantVector.h"
 #include "velox/vector/TypeAliases.h"
+#include "velox/type/custom_type/Int128.h"
 
 namespace facebook {
 namespace velox {

@@ -16,9 +16,12 @@
 
 #include "velox/connectors/hive/HivePartitionUtil.h"
 #include "velox/type/Type.h"
+#include <boost/multiprecision/cpp_int.hpp>
+
 
 
 namespace facebook::velox::connector::hive {
+using int128_t = boost::multiprecision::int128_t;
 
 #define PARTITION_TYPE_DISPATCH(TEMPLATE_FUNC, typeKind, ...)               \
   [&]() {                                                                   \
@@ -50,7 +53,7 @@ inline std::string makePartitionValueString(bool value) {
 }
 // TODO: davidmar implement toString function for int128_t
 template <>
-inline std::string makePartitionValueString(facebook::velox::type::int128 value) {
+inline std::string makePartitionValueString(int128_t value) {
   return "TODO: davidmar implement toString function for int128_t";
 }
 

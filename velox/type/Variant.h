@@ -25,6 +25,7 @@
 #include "velox/common/base/VeloxException.h"
 #include "velox/type/Conversions.h"
 #include "velox/type/Type.h"
+#include "velox/type/custom_type/Int128.h"
 
 namespace facebook::velox {
 
@@ -579,8 +580,19 @@ struct VariantConverter {
       return variant{value.kind()};
     }
     auto converted = util::Converter<ToKind>::cast(value.value<FromKind>());
-    return {converted};
+    return converted;
   }
+  //template <>
+  //static variant convert<
+  //    facebook::velox::TypeKind::BOOLEAN,
+  //    facebook::velox::TypeKind::TIMESTAMP>(const variant& value) {
+  //  if (value.isNull()) {
+  //    return variant{value.kind()};
+  //  }
+  //  auto converted = util::Converter<facebook::velox::TypeKind::TIMESTAMP>::cast(
+  //      value.value<facebook::velox::TypeKind::BOOLEAN>());
+  //  return  variant::timestamp(converted);
+  //}
 
 
   template <TypeKind ToKind>

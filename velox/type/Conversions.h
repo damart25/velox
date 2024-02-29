@@ -23,10 +23,13 @@
 #include "velox/common/base/Exceptions.h"
 #include "velox/type/TimestampConversion.h"
 #include "velox/type/Type.h"
+#include <boost/multiprecision/cpp_int.hpp>
+
 
 DECLARE_bool(experimental_enable_legacy_cast);
 
 namespace facebook::velox::util {
+using int128_t = boost::multiprecision::int128_t;
 
 template <TypeKind KIND, typename = void, bool TRUNCATE = false>
 struct Converter {
@@ -41,7 +44,7 @@ template <>
 struct Converter<TypeKind::BOOLEAN> {
   using T = bool;
 
-  static T cast(const facebook::velox::type::int128& v) {
+  static T cast(const int128_t& v) {
     return v != 0;
   }
   template <typename From>
@@ -312,6 +315,10 @@ struct Converter<TypeKind::HUGEINT> {
   // TODO: davidmar implement logic to convert string to int128_t
   static int128_t cast(const std::string& v) {
     return int128_t(0);
+  }  
+  //TODO: davidmar create a new object of int128_t instead of just returning the same. (Does return call the copy constructor?)
+  static int128_t cast(const int128_t& v) {
+    return v;
   }
 };
 
@@ -422,7 +429,7 @@ struct Converter<TypeKind::VARCHAR, void, TRUNCATE> {
     return folly::to<std::string>(val);
   }
   //TODO: Davidmar, implmenet int128 to string
-  static std::string cast(const facebook::velox::type::int128& val) {
+  static std::string cast(const int128_t& val) {
     return "";
   }
 

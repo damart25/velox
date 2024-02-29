@@ -19,14 +19,14 @@
 #include "velox/common/base/BitUtil.h"
 #include "velox/common/base/Exceptions.h"
 #include "velox/type/StringView.h"
-#include "velox/type/custom_type/Int128.h"
+#include <boost/multiprecision/cpp_int.hpp>
 
 #pragma once
 
 namespace facebook::velox {
 
-using int128_t = type::int128;
-using uint128_t = type::uint128;
+using int128_t = boost::multiprecision::int128_t;
+using uint128_t = boost::multiprecision::uint128_t;
 ;
 
 class HugeInt {
@@ -34,15 +34,15 @@ class HugeInt {
   static constexpr FOLLY_ALWAYS_INLINE int128_t
   build(uint64_t hi, uint64_t lo) {
     // GCC does not allow left shift negative value.
-    return (static_cast<__uint128_t>(hi) << 64) | lo;
+    return (static_cast<uint128_t>(hi) << 64) | lo;
   }
 
   static constexpr FOLLY_ALWAYS_INLINE uint64_t lower(int128_t value) {
-    return value.lo();
+    return static_cast<std::uint64_t>(value);
   }
 
   static constexpr FOLLY_ALWAYS_INLINE uint64_t upper(int128_t value) {
-    return static_cast<uint64_t>(value.hi());
+    return static_cast<std::uint64_t>(value >> 64);
   }
 
   static FOLLY_ALWAYS_INLINE int128_t deserialize(const char* serializedData) {

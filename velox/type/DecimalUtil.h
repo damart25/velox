@@ -48,24 +48,6 @@ class DecimalUtil {
       int128_t(10'000'000'000'000'000),
       int128_t(100'000'000'000'000'000),
       int128_t(1'000'000'000'000'000'000),
-      int128_t(0,                0x8AC7230489E80000),
-      int128_t(0x05,             0x6BC75E2D63100000),
-      int128_t(0x36,             0x35C9ADC5DEA00000),
-      int128_t(0x021E,           0x19E0C9BAB2400000),
-      int128_t(0x152D,           0x02C7E14AF6800000),
-      int128_t(0xD3C2,           0x1BCECCEDA1000000),
-      int128_t(0x084595,         0x161401484A000000),
-      int128_t(0x52B7D2,         0xDCC80CD2E4000000),
-      int128_t(0x033B2E3C,       0x9FD0803CE8000000),
-      int128_t(0x204FCE5E,       0x3E25026110000000),
-      int128_t(0x01431E0FAE,     0x6D7217CAA0000000),
-      int128_t(0x0C9F2C9CD0,     0x4674EDEA40000000),
-      int128_t(0x7E37BE2022,     0xC0914B2680000000),
-      int128_t(0x04EE2D6D415B,   0x85ACEF8100000000),
-      int128_t(0x314DC6448D93,   0x38C15B0A00000000),
-      int128_t(0x01ED09BEAD87C0, 0x378D8E6400000000),
-      int128_t(0x13426172C74D82, 0x2B878FE800000000),
-      int128_t(0xC097CE7BC90715, 0xB34B9F1000000000),
 
       };
 
@@ -249,7 +231,7 @@ class DecimalUtil {
     // Ignore overflow value.
     sum = (int128_t)unsignedSum & ~kOverflowMultiplier;
     sum = isResultNegative ? -sum : sum;
-    return (unsignedSum >> 127);
+    return (int64_t) (unsignedSum >> 127);
   }
 
   inline static int64_t
@@ -298,8 +280,8 @@ class DecimalUtil {
       double totalRemainder = (double)remainderA / count;
       uint128_t sumB{0};
       auto remainderB =
-          DecimalUtil::divideWithRoundUp<uint128_t, int128_t, int64_t>(
-              sumB, sum, count * overflow, true, 0, 0);
+          DecimalUtil::divideWithRoundUp<uint128_t, uint128_t, int64_t>(
+              sumB, (uint128_t ) sum, count * overflow, true, 0, 0);
       totalRemainder += (double)remainderB / (count * overflow);
       DecimalUtil::addWithOverflow(avg, sumA, sumB);
       avg = avg * overflow + (int)(totalRemainder * overflow);

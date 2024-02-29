@@ -31,20 +31,21 @@
 #include "velox/expression/VectorWriters.h"
 #include "velox/functions/lib/RowsTranslationUtil.h"
 #include "velox/type/Type.h"
+#include <boost/multiprecision/cpp_int.hpp>
 
 
 namespace std {
-
+using int128_t = boost::multiprecision::int128_t;
 template <>
-struct is_convertible<facebook::velox::type::int128, const char*>
+struct is_convertible<int128_t, const char*>
     : std::true_type {};
 
 } // namespace std
 namespace folly {
 // TODO: davidmar, implement append for int128 (requires int128 to string/char*)
 template <>
-void toAppend<std::string, facebook::velox::type::int128>(
-    facebook::velox::type::int128 value,
+void toAppend<std::string, int128_t>(
+    int128_t value,
     std::string* result) {
   return;
 }

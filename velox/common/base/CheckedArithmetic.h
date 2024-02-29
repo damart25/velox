@@ -20,9 +20,12 @@
 #include <string>
 #include "folly/Likely.h"
 #include "velox/common/base/Exceptions.h"
+#include <boost/multiprecision/cpp_int.hpp>
 #include "velox/type/custom_type/Int128.h"
 
+
 namespace facebook::velox {
+using int128_t = boost::multiprecision::int128_t;
 
 template <typename T>
 T checkedPlus(const T& a, const T& b, const char* typeName = "integer") {
@@ -34,11 +37,11 @@ T checkedPlus(const T& a, const T& b, const char* typeName = "integer") {
   return result;
 }
 template <>
-type::int128 checkedPlus<type::int128>(
-    const type::int128& a,
-    const type::int128& b, const char* typeName) {
+int128_t checkedPlus<int128_t>(
+    const int128_t& a,
+    const int128_t& b, const char* typeName) {
        
-    type::int128 result;
+    int128_t result;
     bool overflow = type::add_overflow(a,b, &result);
     if (UNLIKELY(overflow)) {
         VELOX_ARITHMETIC_ERROR("{} overflow: {} + {}", typeName, a, b);
@@ -57,11 +60,11 @@ T checkedMinus(const T& a, const T& b, const char* typeName = "integer") {
   return result;
 }
 template <>
-type::int128 checkedMinus(
-    const type::int128& a,
-    const type::int128& b,
+int128_t checkedMinus(
+    const int128_t& a,
+    const int128_t& b,
     const char* typeName) {
-  type::int128 result;
+  int128_t result;
   bool overflow = type::sub_overflow(a, b, &result);
   if (UNLIKELY(overflow)) {
     VELOX_ARITHMETIC_ERROR("{} overflow: {} - {}", typeName, a, b);

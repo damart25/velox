@@ -20,6 +20,7 @@
 #include "velox/common/encode/Base64.h"
 #include "velox/type/DecimalUtil.h"
 #include "velox/type/HugeInt.h"
+#include "folly/hash/Hash.h"
 
 namespace facebook::velox {
 
@@ -472,6 +473,14 @@ void serializeOpaque(
   }
 }
 
+//TODO: Davidmar convert int128_t values to folly::dynamic.
+folly::dynamic to_dynamic(int128_t value) {
+    folly::dynamic dynamicobject = folly::dynamic::object;
+    dynamicobject["lo"] = 0;
+    dynamicobject["hi"] = 1;
+    return dynamicobject;
+}
+
 folly::dynamic variant::serialize() const {
   folly::dynamic variantObj = folly::dynamic::object;
 
@@ -529,7 +538,7 @@ folly::dynamic variant::serialize() const {
       break;
     }
     case TypeKind::HUGEINT: {
-      objValue = value<TypeKind::HUGEINT>();
+      objValue = to_dynamic(value<TypeKind::HUGEINT>());
       break;
     }
     case TypeKind::BOOLEAN: {
