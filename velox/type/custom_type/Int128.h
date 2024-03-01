@@ -454,12 +454,17 @@ class int128 {
   operator boost::multiprecision::int256_t() const {
     return boost::multiprecision::int256_t(0);
   }
+  operator boost::multiprecision::int128_t() const {
+    return boost::multiprecision::int128_t(0);
+  }
 
   operator uint128() const {
     return uint128(this->hi_, this->lo_);
   }
 
 };
+
+
 
 bool mul_overflow(int128 a , int128 b ,int64_t result) {
   return true;
@@ -520,6 +525,7 @@ double log(facebook::velox::type::int128 value) {
 }
 
 
+
 } // namespace std
 #ifndef DUCK_DB
 namespace folly {
@@ -531,12 +537,14 @@ struct hasher<facebook::velox::type::uint128> : detail::integral_hasher<facebook
 #endif
 
 
-namespace boost::multiprecision{
+//namespace boost::multiprecision{
+//
+//template<>
+//inline int256_t int256_t::operator*(int128_t other) {
+//    return int256_t(other);
+//}
+//
+//}
 
-template<>
-inline int256_t int256_t::operator*(int128_t other) {
-    return int256_t(other);
-}
 
-}
 #endif /* TYPE_INT128_H__ */
