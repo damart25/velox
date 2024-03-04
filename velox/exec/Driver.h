@@ -114,7 +114,7 @@ struct ThreadState {
 
   void setThread() {
     thread = std::this_thread::get_id();
-#if !defined(__APPLE__)
+#if !defined(__APPLE__) and !defined(_WIN32)
     // This is a debugging feature disabled on the Mac since syscall
     // is deprecated on that platform.
     tid = syscall(FOLLY_SYS_gettid);

@@ -517,7 +517,7 @@ class WriterContext : public CompressionBufferPool {
         FOLLY_FALLTHROUGH;
       case TypeKind::FUNCTION:
         FOLLY_FALLTHROUGH;
-      case TypeKind::OPAQUE:
+      case TypeKind::OPAQUE_2:
         FOLLY_FALLTHROUGH;
       case TypeKind::INVALID:
         FOLLY_FALLTHROUGH;

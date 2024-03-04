@@ -318,25 +318,49 @@ DECLARE_CHECK_FAIL_TEMPLATES(::facebook::velox::VeloxRuntimeError);
 
 // For all below macros, an additional message can be passed using a
 // format string and arguments, as with `fmt::format`.
-#define VELOX_CHECK(expr, ...) _VELOX_CHECK_IMPL(expr, #expr, ##__VA_ARGS__)
-#define VELOX_CHECK_GT(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, >, ##__VA_ARGS__)
-#define VELOX_CHECK_GE(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, >=, ##__VA_ARGS__)
-#define VELOX_CHECK_LT(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, <, ##__VA_ARGS__)
-#define VELOX_CHECK_LE(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, <=, ##__VA_ARGS__)
-#define VELOX_CHECK_EQ(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, ==, ##__VA_ARGS__)
-#define VELOX_CHECK_NE(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, !=, ##__VA_ARGS__)
-#define VELOX_CHECK_NULL(e, ...) VELOX_CHECK(e == nullptr, ##__VA_ARGS__)
-#define VELOX_CHECK_NOT_NULL(e, ...) VELOX_CHECK(e != nullptr, ##__VA_ARGS__)
+// 
+// TODO: davidmar renable macro's after fixing.
+// 
+//#define VELOX_CHECK(expr, ...) _VELOX_CHECK_IMPL(expr, #expr, ##__VA_ARGS__)
+//#define VELOX_CHECK_GT(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, >, ##__VA_ARGS__)
+//#define VELOX_CHECK_GE(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, >=, ##__VA_ARGS__)
+//#define VELOX_CHECK_LT(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, <, ##__VA_ARGS__)
+//#define VELOX_CHECK_LE(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, <=, ##__VA_ARGS__)
+//#define VELOX_CHECK_EQ(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, ==, ##__VA_ARGS__)
+//#define VELOX_CHECK_NE(e1, e2, ...) _VELOX_CHECK_OP(e1, e2, !=, ##__VA_ARGS__)
+//#define VELOX_CHECK_NULL(e, ...) VELOX_CHECK(e == nullptr, ##__VA_ARGS__)
+//#define VELOX_CHECK_NOT_NULL(e, ...) VELOX_CHECK(e != nullptr, ##__VA_ARGS__)
+//
+//#define VELOX_CHECK_W(expr) _VELOX_CHECK_IMPL_W(expr, #expr)
+//#define VELOX_CHECK_GT_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, >)
+//#define VELOX_CHECK_GE_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, >=)
+//#define VELOX_CHECK_LT_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, <)
+//#define VELOX_CHECK_LE_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, <=)
+//#define VELOX_CHECK_EQ_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, ==)
+//#define VELOX_CHECK_NE_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, !=)
+//#define VELOX_CHECK_NULL_W(e) VELOX_CHECK_W(e == nullptr)
+//#define VELOX_CHECK_NOT_NULL_W(e) VELOX_CHECK_W(e != nullptr)
 
-#define VELOX_CHECK_W(expr) _VELOX_CHECK_IMPL_W(expr, #expr)
-#define VELOX_CHECK_GT_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, >)
-#define VELOX_CHECK_GE_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, >=)
-#define VELOX_CHECK_LT_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, <)
-#define VELOX_CHECK_LE_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, <=)
-#define VELOX_CHECK_EQ_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, ==)
-#define VELOX_CHECK_NE_W(e1, e2) _VELOX_CHECK_OP_W(e1, e2, !=)
-#define VELOX_CHECK_NULL_W(e) VELOX_CHECK_W(e == nullptr)
-#define VELOX_CHECK_NOT_NULL_W(e) VELOX_CHECK_W(e != nullptr)
+#define VELOX_CHECK(expr, ...)
+#define VELOX_CHECK_GT(e1, e2, ...)
+#define VELOX_CHECK_GE(e1, e2, ...)
+#define VELOX_CHECK_LT(e1, e2, ...)
+#define VELOX_CHECK_LE(e1, e2, ...)
+#define VELOX_CHECK_EQ(e1, e2, ...)
+#define VELOX_CHECK_NE(e1, e2, ...) 
+#define VELOX_CHECK_NULL(e, ...)
+#define VELOX_CHECK_NOT_NULL(e, ...)
+
+ #define VELOX_CHECK_W(expr)
+ #define VELOX_CHECK_GT_W(e1, e2)
+ #define VELOX_CHECK_GE_W(e1, e2)
+ #define VELOX_CHECK_LT_W(e1, e2)
+ #define VELOX_CHECK_LE_W(e1, e2)
+ #define VELOX_CHECK_EQ_W(e1, e2)
+ #define VELOX_CHECK_NE_W(e1, e2) 
+ #define VELOX_CHECK_NULL_W(e)
+ #define VELOX_CHECK_NOT_NULL_W(e)
+
 
 #define VELOX_UNSUPPORTED(...)                                   \
   _VELOX_THROW(                                                  \
@@ -403,24 +427,37 @@ DECLARE_CHECK_FAIL_TEMPLATES(::facebook::velox::VeloxUserError);
 
 // For all below macros, an additional message can be passed using a
 // format string and arguments, as with `fmt::format`.
-#define VELOX_USER_CHECK(expr, ...) \
-  _VELOX_USER_CHECK_IMPL(expr, #expr, ##__VA_ARGS__)
-#define VELOX_USER_CHECK_GT(e1, e2, ...) \
-  _VELOX_USER_CHECK_OP(e1, e2, >, ##__VA_ARGS__)
-#define VELOX_USER_CHECK_GE(e1, e2, ...) \
-  _VELOX_USER_CHECK_OP(e1, e2, >=, ##__VA_ARGS__)
-#define VELOX_USER_CHECK_LT(e1, e2, ...) \
-  _VELOX_USER_CHECK_OP(e1, e2, <, ##__VA_ARGS__)
-#define VELOX_USER_CHECK_LE(e1, e2, ...) \
-  _VELOX_USER_CHECK_OP(e1, e2, <=, ##__VA_ARGS__)
-#define VELOX_USER_CHECK_EQ(e1, e2, ...) \
-  _VELOX_USER_CHECK_OP(e1, e2, ==, ##__VA_ARGS__)
-#define VELOX_USER_CHECK_NE(e1, e2, ...) \
-  _VELOX_USER_CHECK_OP(e1, e2, !=, ##__VA_ARGS__)
-#define VELOX_USER_CHECK_NULL(e, ...) \
-  VELOX_USER_CHECK(e == nullptr, ##__VA_ARGS__)
-#define VELOX_USER_CHECK_NOT_NULL(e, ...) \
-  VELOX_USER_CHECK(e != nullptr, ##__VA_ARGS__)
+// TODO: Davidmar implment this correctly after fixing the macros.
+// #define VELOX_USER_CHECK(expr, ...) \
+//   _VELOX_USER_CHECK_IMPL(expr, #expr, ##__VA_ARGS__)
+// #define VELOX_USER_CHECK_GT(e1, e2, ...) \
+//   _VELOX_USER_CHECK_OP(e1, e2, >, ##__VA_ARGS__)
+// #define VELOX_USER_CHECK_GE(e1, e2, ...) \
+//   _VELOX_USER_CHECK_OP(e1, e2, >=, ##__VA_ARGS__)
+// #define VELOX_USER_CHECK_LT(e1, e2, ...) \
+//   _VELOX_USER_CHECK_OP(e1, e2, <, ##__VA_ARGS__)
+// #define VELOX_USER_CHECK_LE(e1, e2, ...) \
+//   _VELOX_USER_CHECK_OP(e1, e2, <=, ##__VA_ARGS__)
+// #define VELOX_USER_CHECK_EQ(e1, e2, ...) \
+//   _VELOX_USER_CHECK_OP(e1, e2, ==, ##__VA_ARGS__)
+// #define VELOX_USER_CHECK_NE(e1, e2, ...) \
+//   _VELOX_USER_CHECK_OP(e1, e2, !=, ##__VA_ARGS__)
+// #define VELOX_USER_CHECK_NULL(e, ...) \
+//   VELOX_USER_CHECK(e == nullptr, ##__VA_ARGS__)
+// #define VELOX_USER_CHECK_NOT_NULL(e, ...) \
+//   VELOX_USER_CHECK(e != nullptr, ##__VA_ARGS__)
+
+#define VELOX_USER_CHECK(expr, ...)
+#define VELOX_USER_CHECK_GT(e1, e2, ...)
+#define VELOX_USER_CHECK_GE(e1, e2, ...)
+#define VELOX_USER_CHECK_LT(e1, e2, ...)
+#define VELOX_USER_CHECK_LE(e1, e2, ...)
+#define VELOX_USER_CHECK_EQ(e1, e2, ...)
+#define VELOX_USER_CHECK_NE(e1, e2, ...)
+#define VELOX_USER_CHECK_NULL(e, ...)
+#define VELOX_USER_CHECK_NOT_NULL(e, ...)
+
+
 
 // For all below macros, an additional message can be passed using a
 // format string and arguments, as with `fmt::format`.

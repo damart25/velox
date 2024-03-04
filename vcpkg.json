@@ -12,7 +12,14 @@
     "re2",
     "mman",
     "cpr",
-    "gtest"
+    "gtest",
+    "zlib",
+    "lz4",
+    "zstd",
+    "snappy",
+    "arrow",
+    "thrift",
+    "protobuf"
   ],
   "overrides" : [
     {
@@ -34,6 +41,10 @@
     {
       "name" : "gtest",
       "version" : "1.13.0"
+    },
+    {
+      "name" : "protobuf",
+      "version" : "3.21.12"
     }
   ],
   "vcpkg-configuration" : {

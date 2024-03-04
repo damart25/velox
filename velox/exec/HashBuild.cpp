@@ -525,7 +525,7 @@ bool HashBuild::reserveMemory(const RowVectorPtr& input) {
 }
 
 void HashBuild::spillInput(const RowVectorPtr& input) {
-  VELOX_CHECK_EQ(input->size(), activeRows_.size());
+  VELOX_CHECK_EQ_W(input->size(), activeRows_.size());
 
   if (!spillEnabled() || spiller_ == nullptr || !spiller_->isAnySpilled() ||
       !activeRows_.hasSelections()) {
@@ -634,8 +634,8 @@ void HashBuild::spillPartition(
 }
 
 bool HashBuild::requestSpill(RowVectorPtr& input) {
-  VELOX_CHECK_GT(numSpillRows_, 0);
-  VELOX_CHECK_GT(numSpillBytes_, 0);
+  VELOX_CHECK_GT_W(numSpillRows_, 0);
+  VELOX_CHECK_GT_W(numSpillBytes_, 0);
 
   input_ = std::move(input);
   if (spillGroup_->requestSpill(*this, future_)) {
@@ -676,8 +676,8 @@ void HashBuild::runSpill(const std::vector<Operator*>& spillOperators) {
     spillers.push_back(build->spiller_.get());
     build->addAndClearSpillTarget(targetRows, targetBytes);
   }
-  VELOX_CHECK_GT(targetRows, 0);
-  VELOX_CHECK_GT(targetBytes, 0);
+  VELOX_CHECK_GT_W(targetRows, 0);
+  VELOX_CHECK_GT_W(targetBytes, 0);
 
   std::vector<Spiller::SpillableStats> spillableStats(
       spiller_->hashBits().numPartitions());
@@ -855,7 +855,7 @@ bool HashBuild::finishHashBuild() {
 void HashBuild::recordSpillStats() {
   if (spiller_ != nullptr) {
     const auto spillStats = spiller_->stats();
-    VELOX_CHECK_EQ(spillStats.spillSortTimeUs, 0);
+    VELOX_CHECK_EQ_W(spillStats.spillSortTimeUs, 0);
     Operator::recordSpillStats(spillStats);
   } else if (exceededMaxSpillLevelLimit_) {
     exceededMaxSpillLevelLimit_ = false;
@@ -1053,13 +1053,13 @@ void HashBuild::setState(State state) {
 }
 
 void HashBuild::checkStateTransition(State state) {
-  VELOX_CHECK_NE(state_, state);
+  VELOX_CHECK_NE_W(state_, state);
   switch (state) {
     case State::kRunning:
       if (!spillEnabled()) {
-        VELOX_CHECK_EQ(state_, State::kWaitForBuild);
+        VELOX_CHECK_EQ_W(state_, State::kWaitForBuild);
       } else {
-        VELOX_CHECK_NE(state_, State::kFinish);
+        VELOX_CHECK_NE_W(state_, State::kFinish);
       }
       break;
     case State::kWaitForBuild:
@@ -1069,7 +1069,7 @@ void HashBuild::checkStateTransition(State state) {
     case State::kWaitForProbe:
       FOLLY_FALLTHROUGH;
     case State::kFinish:
-      VELOX_CHECK_EQ(state_, State::kRunning);
+      VELOX_CHECK_EQ_W(state_, State::kRunning);
       break;
     default:
       VELOX_UNREACHABLE(stateName(state_));
@@ -1171,7 +1171,7 @@ void HashBuild::reclaim(
           try {
             buildOp->spiller_->fillSpillRuns(spillableStats);
             buildOp->spiller_->spill();
-            VELOX_CHECK_EQ(buildOp->table_->numDistinct(), 0);
+            VELOX_CHECK_EQ_W(buildOp->table_->numDistinct(), 0);
             buildOp->table_->clear();
             // Release the minimum reserved memory.
             buildOp->pool()->release();

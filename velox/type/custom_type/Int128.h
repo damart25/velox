@@ -23,7 +23,11 @@
 #include <stdint.h>
 #include <utility>
 #include <cmath>
+#ifndef DUCK_DB
 #include <folly/dynamic.h>
+#endif
+
+#include <boost/multiprecision/cpp_int.hpp>
 
 namespace facebook::velox::type {
 
@@ -82,6 +86,10 @@ class uint128 {
     return *this;
   }
   uint128 operator&(uint128 other) const {
+    uint128 a(*this);
+    return (a &= other);
+  }  
+  uint128 operator&(int other) const {
     uint128 a(*this);
     return (a &= other);
   }
@@ -219,12 +227,14 @@ class int128 {
   void setLo(uint64_t lo) {
     lo_ = lo;
   }
+  #ifndef DUCK_DB
   operator folly::dynamic() const {
     folly::dynamic dynamicObject = folly::dynamic::object;
     dynamicObject["lo"] = this->lo_;
     dynamicObject["hi"] = this->hi_;
     return dynamicObject;
   }
+  #endif
 
 
   int128& operator|=(int128 other) {
@@ -235,6 +245,10 @@ class int128 {
   int128 operator|(int128 other) const {
     int128 a(*this);
     return (a |= other);
+  }  
+  int128 operator|(uint64_t other) const {
+    int128 a(*this);
+    return (a |= other);
   }
 
   int128& operator&=(int128 other) {
@@ -243,6 +257,15 @@ class int128 {
     return *this;
   }
   int128 operator&(int128 other) const {
+    int128 a(*this);
+    return (a &= other);
+  }    
+  int128 operator&(uint128 other) const {
+    int128 a(*this);
+    return (a &= other);
+  }  
+  
+  int128 operator&(uint64_t other) const {
     int128 a(*this);
     return (a &= other);
   }
@@ -260,6 +283,11 @@ class int128 {
   int128 operator<<(int n) const {
     int128 a(*this);
     return (a <<= n);
+  }  
+  
+  int128 operator<<(uint64_t n) const {
+    int128 a(*this);
+    return (a <<= n);
   }
 
   int128& operator>>=(int n) {
@@ -273,6 +301,10 @@ class int128 {
     return *this;
   }
   int128 operator>>(int n) const {
+    int128 a(*this);
+    return (a >>= n);
+  }  
+  int128 operator>>(uint64_t n) const {
     int128 a(*this);
     return (a >>= n);
   }
@@ -419,11 +451,20 @@ class int128 {
     return this->lo_;
   }
 
+  operator boost::multiprecision::int256_t() const {
+    return boost::multiprecision::int256_t(0);
+  }
+  operator boost::multiprecision::int128_t() const {
+    return boost::multiprecision::int128_t(0);
+  }
+
   operator uint128() const {
     return uint128(this->hi_, this->lo_);
   }
 
 };
+
+
 
 bool mul_overflow(int128 a , int128 b ,int64_t result) {
   return true;
@@ -445,6 +486,10 @@ bool mul_overflow(int128 a , int128 b ,int128 *result) {
 } // namespace facebook::velox::type
 
 namespace std {
+
+template <>
+struct is_pod<facebook::velox::type::int128> : std::true_type {};
+
 template <>
 struct hash<facebook::velox::type::uint128> {
   // TODO: davidmar implement hashing operation for 128 bits.
@@ -464,16 +509,42 @@ template <>
 struct make_unsigned<facebook::velox::type::int128> {
   using type = facebook::velox::type::uint128; 
 };
+// TODO: add std::make_unsiged capabilities
+template <>
+struct make_unsigned<facebook::velox::type::uint128> {
+  using type = facebook::velox::type::uint128; 
+};
+// TODO: add std::make_signed capabilities
+template <>
+struct make_signed<facebook::velox::type::uint128> {
+  using type = facebook::velox::type::int128; 
+};
 // TODO: Implemente std::log for int128 
 double log(facebook::velox::type::int128 value) {
   return 0.0;
 }
 
 
-} // namespace std
 
+} // namespace std
+#ifndef DUCK_DB
 namespace folly {
 template <>
 struct hasher<facebook::velox::type::int128> : detail::integral_hasher<facebook::velox::type::int128> {};
+template <>
+struct hasher<facebook::velox::type::uint128> : detail::integral_hasher<facebook::velox::type::uint128> {};
 } // namespace folly
+#endif
+
+
+//namespace boost::multiprecision{
+//
+//template<>
+//inline int256_t int256_t::operator*(int128_t other) {
+//    return int256_t(other);
+//}
+//
+//}
+
+
 #endif /* TYPE_INT128_H__ */

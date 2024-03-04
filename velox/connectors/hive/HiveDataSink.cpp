@@ -56,7 +56,7 @@ std::string makePartitionDirectory(
     const std::string& tableDirectory,
     const std::optional<std::string>& partitionSubdirectory) {
   if (partitionSubdirectory.has_value()) {
-    return fs::path(tableDirectory) / partitionSubdirectory.value();
+    return (fs::path(tableDirectory) / partitionSubdirectory.value()).string();
   }
   return tableDirectory;
 }
@@ -573,7 +573,7 @@ uint32_t HiveDataSink::appendWriter(const HiveWriterId& id) {
   WRITER_NON_RECLAIMABLE_SECTION_GUARD(writerInfo_.size() - 1);
   auto writer = writerFactory_->createWriter(
       dwio::common::FileSink::create(
-          writePath,
+          writePath.string(),
           {.bufferWrite = false,
            .connectorProperties = connectorProperties_,
            .pool = writerInfo_.back()->sinkPool.get(),
