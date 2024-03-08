@@ -35,9 +35,9 @@ Add the bison and flex folder to the PATH (environment variables)
 
 # Build Velox
 ```
-cmake -B "_build\updateCPP" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL="ON" -DVELOX_BUILD_TESTING="ON" -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17
+cmake -B "_build\enable_parquet" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL=OFF -DVELOX_BUILD_TESTING=OFF -DVELOX_ENABLE_PARQUET=1 -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=D:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17 | Tee-object -FilePath "build_details_gluten_2024_03_04.txt"
 ```
 
 ```
-cmake --build . --config "Release" > build_2024_01_08_v1.txt
+cmake --build . --config "Release" --parallel 28 | Tee-Object -FilePath "build_2024_03_08.txt"
 ```
