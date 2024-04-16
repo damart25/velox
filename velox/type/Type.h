@@ -2407,10 +2407,12 @@ struct IsRowType<Row<Ts...>> {
 namespace folly {
 template <>
 struct hasher<::facebook::velox::UnknownValue> {
-  size_t operator()(const ::facebook::velox::UnknownValue /* value */) const {
+  size_t operator()(const ::facebook::velox::UnknownValue) // value
+  const {
     return 0;
   }
 };
+/*
 // TODO: davidmar implement toString function for int128_t
 template <>
 inline std::string to<std::string, int128_t>(const int128_t& value) {
@@ -2424,7 +2426,7 @@ inline std::string to<std::string>(const uint128_t& value) {
   // return std::string(value);
   return "TODO: davidmar implement toString function for uint128_t";
 }
-
+*/
 // Helper functions to allow TypeKind and some common variations to be
 // transparently used by folly::sformat.
 //
