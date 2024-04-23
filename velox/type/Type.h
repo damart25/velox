@@ -1596,6 +1596,9 @@ std::shared_ptr<const OpaqueType> OPAQUE_2() {
 #define VELOX_SCALAR_ACCESSOR(KIND) \
   std::shared_ptr<const ScalarType<TypeKind::KIND>> KIND()
 
+#define VELOX_SCALAR_ACCESSOR2(KIND) \
+  std::shared_ptr<const ScalarType<TypeKind::BOOLEAN>> KIND()
+
 #define VELOX_STATIC_FIELD_DYNAMIC_DISPATCH(CLASS, FIELD, typeKind)           \
   [&]() {                                                                     \
     switch (typeKind) {                                                       \
@@ -1660,6 +1663,7 @@ std::shared_ptr<const OpaqueType> OPAQUE_2() {
 
 VELOX_SCALAR_ACCESSOR(INTEGER);
 VELOX_SCALAR_ACCESSOR(BOOLEAN);
+VELOX_SCALAR_ACCESSOR2(BOOLEAN2);
 VELOX_SCALAR_ACCESSOR(TINYINT);
 VELOX_SCALAR_ACCESSOR(SMALLINT);
 VELOX_SCALAR_ACCESSOR(BIGINT);
@@ -1721,6 +1725,7 @@ std::shared_ptr<const Type> createType<TypeKind::OPAQUE_2>(
     std::vector<std::shared_ptr<const Type>>&& children);
 
 #undef VELOX_SCALAR_ACCESSOR
+#undef VELOX_SCALAR_ACCESSOR2
 
 template <typename UNDERLYING_TYPE>
 struct Variadic {
