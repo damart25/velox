@@ -17,8 +17,7 @@
  * Simple data structure for representing 128-bit numbers as 2 64-bit integers.
  */
 
-#ifndef TYPE_INT128_H__
-#define TYPE_INT128_H__
+#pragma once
 
 #include <stdint.h>
 #include <utility>
@@ -478,26 +477,12 @@ class int128 {
 
 };
 
-int128 tryTo(folly::StringPiece sp) {
-  return int128(0);
-}
+int128 tryTo(folly::StringPiece sp);
 
-bool mul_overflow(int128 a , int128 b ,int64_t result) {
-  return true;
-
-}
-bool add_overflow(int128 a , int128 b ,int128* result) {
-  return true;
-
-}bool sub_overflow(int128 a , int128 b ,int128* result) {
-  return true;
-
-}
-bool mul_overflow(int128 a , int128 b ,int128 *result) {
-  return true;
-
-} // namespace facebook
-
+bool mul_overflow(int128 a, int128 b, int64_t result);
+bool add_overflow(int128 a, int128 b, int128* result);
+bool sub_overflow(int128 a, int128 b, int128* result);
+bool mul_overflow(int128 a, int128 b, int128* result);
 
 } // namespace facebook::velox::type
 
@@ -567,4 +552,3 @@ struct hasher<facebook::velox::type::uint128> : detail::integral_hasher<facebook
 //}
 
 
-#endif /* TYPE_INT128_H__ */
