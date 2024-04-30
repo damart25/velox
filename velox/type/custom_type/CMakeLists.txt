@@ -13,7 +13,11 @@
 # limitations under the License.
 add_library(velox_type_custom_type Int128.cpp)
 
-target_link_libraries(velox_type_custom_type Folly::folly)
+target_link_libraries(
+	velox_type_custom_type
+	PUBLIC Folly::folly
+	PRIVATE gflags::gflags
+)
 
 add_subdirectory(test)
 

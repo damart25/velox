@@ -521,9 +521,7 @@ struct make_signed<facebook::velox::type::uint128> {
   using type = facebook::velox::type::int128; 
 };
 // TODO: Implemente std::log for int128 
-double log(facebook::velox::type::int128 value) {
-  return 0.0;
-}
+double log(facebook::velox::type::int128 value);
 
 
 
