@@ -16,6 +16,7 @@
 
 #include "velox/type/DecimalUtil.h"
 #include "velox/type/HugeInt.h"
+#include <boost/multiprecision/cpp_int.hpp>
 
 namespace facebook::velox {
 namespace {
@@ -117,3 +118,15 @@ void DecimalUtil::computeAverage(
 }
 
 } // namespace facebook::velox
+
+namespace facebook::velox::functions::sparksql {
+using int256_t = boost::multiprecision::int256_t;
+using int128_t = type::int128;
+using uint128_t = type::uint128;
+
+int256_t toInt256(int128_t value) {
+  int256_t retval = value.hi();
+  retval = retval << 64;
+  retval |= value.lo();
+}
+} // namespace facebook::velox::functions::sparksql
