@@ -71,7 +71,7 @@ Update that to the PATH
 
 ## Add LZO package
 Download lzo-2.10 from `\\amr.corp.intel.com\ec\proj\SSG\Benchmarks\cloud-eng\Working Directories\hsukhwan\lzo-2.10.tar.gz`
-Copy it at C:\Users\Administrator\source\repos\lzo-2.10
+Copy it at `C:\Users\Administrator\source\repos\lzo-2.10`
 
 In file `<repo>/CMake/Findlzo2.cmake`, update 
 ```
@@ -80,29 +80,32 @@ LZO2_INCLUDE_DIR -> C:\Users\Administrator\source\repos\lzo-2.10\include
 ```
 
 # Build Velox
+Setup build environment for Minimal (not needed anymore)
 ```
-cmake -B "_build\velox-hs" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL="ON" -DVELOX_BUILD_TESTING="ON" -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17 *> _build/velox-hs/logs/buildenv_(date).txt
+cmake -B "_build\velox-hs" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL="ON" -DVELOX_BUILD_TESTING="ON" -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17 | Tee-object -FilePath "logs/buildenv_<date_comment>.txt"
 ```
-Building `windows_support_oap_2024_02_29`
+Setup build environment for building `windows_support_oap_2024_02_29`
 ```
-cmake -B "_build\velox-hs" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL=OFF -DVELOX_BUILD_TESTING=OFF -DVELOX_ENABLE_PARQUET=1 -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17 *> "logs/buildenv_20240409.txt"
+cmake -B "_build\velox-hs" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL=OFF -DVELOX_BUILD_TESTING=OFF -DVELOX_ENABLE_PARQUET=1 -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17  | Tee-object -FilePath "logs/buildenv_<date_comment>.txt"
 ```
 
-Move to build directory and build it. 
+Move to build directory and then build it.
 ```
 cd  _build\velox-hs
-cmake --build . --config "Release" > logs\build_2024_03_07_winsupport_full.txt
+cmake --build . --config "Release" | Tee-object -FilePath logs\build_2024_04_29_Int128CheckedPlus.txt
 ```
 
-cmake -B "_build\enable_parquet" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL=OFF -DVELOX_BUILD_TESTING=OFF -DVELOX_ENABLE_PARQUET=1 -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=D:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17 | Tee-object -FilePath "build_details_gluten_2024_03_04.txt"
+(optional) If you need to clean the build in the future, do
+```
+cmake --build . --config "Release" --target clean | Tee-object -FilePath logs\build_<date_comment>.txt
+```
 
-1. Copy .lib lines -> match with David's build
-2. Create new repo -> branch to 1.1.1 -> Branch with Windows Changes -> patch all changes by Hand -> build -> eventually send pull request
-
-
+# Known errors
+Problem
+```
 C:/Users/hsukhwan/Downloads/repos/damart25_velox/_build/velox-hs/vcpkg_installed/x64-windows/include\folly/net/NetOps.h(64,8): message : previous definition is here
-
-Please comment the following block. 
+```
+Solution - Please comment the following block.
 ```
 /*
 struct sockaddr_un {
@@ -112,4 +115,12 @@ struct sockaddr_un {
 */
 ```
 
-Rebaseline with a working version
+# Misc Comments (ignore)
+Parse build file for libs
+```
+Get-Content .\logs\build_2024_03_18_2.txt | Select-String '->' | Select-String '\.lib' | ForEach-Object Line | Out-File .\logs\build_2024_03_18_2_libs.txt
+```
+Master diff of all commits by damart25
+```
+https://github.com/damart25/velox/commit/8a0785d17bf05c4ccb817b79c22c34643ed52318#diff-24ab21c3a960665939e2043f811c576ba51a1bf306c843d4daccebb93ea62ea0
+```
