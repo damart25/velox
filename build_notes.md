@@ -89,6 +89,41 @@ Setup build environment for building `windows_support_oap_2024_02_29`
 cmake -B "_build\velox-hs" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL=OFF -DVELOX_BUILD_TESTING=OFF -DVELOX_ENABLE_PARQUET=1 -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17  | Tee-object -FilePath "logs/buildenv_<date_comment>.txt"
 ```
 
+Test build environment for building `windows_support_oap_2024_02_29`
+```
+cmake -B "_build\velox-hs" -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL=OFF -DVELOX_BUILD_TESTING=OFF -DVELOX_ENABLE_PARQUET=ON -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17  | Tee-object -FilePath "_build\velox-hs\logs\buildenv_ParquetON.txt"
+```
+
+Manual
+```
+cmake
+-B "_build\velox-hs"
+-DTREAT_WARNINGS_AS_ERRORS=0
+-DENABLE_ALL_WARNINGS=1
+-DVELOX_BUILD_MINIMAL=OFF
+-DVELOX_BUILD_TESTING=OFF
+-DVELOX_ENABLE_PARQUET=1
+-DCMAKE_BUILD_TYPE=Release
+-DMAX_LINK_JOBS=
+-DMAX_HIGH_MEM_JOBS=
+-T ClangCL
+-DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake
+-DCXX_STANDARD=17  | Tee-object -FilePath "logs/buildenv_<date_comment>.txt"
+```
+From automation code
+```
+cmake -B "_build\velox-hs"
+-DTREAT_WARNINGS_AS_ERRORS=0
+-DENABLE_ALL_WARNINGS=1
+-DVELOX_BUILD_MINIMAL=OFF
+-DVELOX_BUILD_TESTING=OFF	#From $COMPILE_OPTION
+-DVELOX_ENABLE_PARQUET=ON	#From $COMPILE_OPTION
+-DCMAKE_BUILD_TYPE=Release	#From $COMPILE_OPTION
+-T ClangCL
+-DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake
+-DCXX_STANDARD=17  | Tee-object -FilePath "logs/buildenv_<date_comment>.txt"
+```
+
 Move to build directory and then build it.
 ```
 cd  _build\velox-hs
