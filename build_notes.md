@@ -110,6 +110,8 @@ cmake
 -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake
 -DCXX_STANDARD=17  | Tee-object -FilePath "logs/buildenv_<date_comment>.txt"
 ```
+cmake . -DTREAT_WARNINGS_AS_ERRORS=0 -DENABLE_ALL_WARNINGS=1 -DVELOX_BUILD_MINIMAL=OFF -DVELOX_BUILD_TESTING=OFF -DVELOX_ENABLE_PARQUET=ON -DCMAKE_BUILD_TYPE=Release -DMAX_LINK_JOBS= -DMAX_HIGH_MEM_JOBS= -T ClangCL -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake -DCXX_STANDARD=17  | Tee-object -FilePath "..\logs\buildenv_veloxCopy_2024_06_07.txt"
+
 From automation code
 ```
 cmake -B "_build\velox-hs"
