@@ -7,7 +7,7 @@ Why install from source? Need to build with BUILD_SHARED_LIBS, coz velox needs i
 
 AR - In case gflags installed on 
 
-Install Gflags from source. Do this on x64 VS command prompt.
+Install Gflags from source. Do this on x64 VS command prompt (and not Powershell)
 ```
 git clone https://github.com/gflags/gflags
 cd gflags
